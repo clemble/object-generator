@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: com.clemble.test:common:0.1.4-SNAPSHOT">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/clemble/test/common/0.1.4-SNAPSHOT/common-0.1.4-20150114.194403-13.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/com/clemble/test/common/0.1.4-SNAPSHOT/common-0.1.4-20150114.194403-13-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/clemble/test/common/0.1.4-SNAPSHOT/common-0.1.4-20150114.194403-13-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
