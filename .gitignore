@@ -13,3 +13,4 @@ hs_err_pid*
 # Non related objects #
 .idea
 /target
+pom.xml.releaseBackup
