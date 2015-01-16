@@ -3,7 +3,7 @@
     <groupId>com.clemble.object-generator</groupId>
     <artifactId>object-generator</artifactId>
     <name>object-generator</name>
-    <version>1.0</version>
+    <version>7</version>
     
     <packaging>pom</packaging>
     
