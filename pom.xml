@@ -9,13 +9,21 @@
     
     <properties>
         <!-- Generic dependencies -->
+        <cglib.version>2.2</cglib.version>
         <guava.version>13.0</guava.version>
         <reflections.version>0.9.8</reflections.version>
         <commons-lang.version>3.1</commons-lang.version>
         <commons-math.version>3.0</commons-math.version>
+        <javax.validation.version>1.0.0.GA</javax.validation.version>
         <javax.inject.version>1</javax.inject.version>
         <!-- Test dependencies -->
         <junit.version>4.11</junit.version>
+        <robolectric.version>2.2</robolectric.version>
+        <!-- Build plugins dependencies -->
+        <maven.compile.plugin.version>2.3.2</maven.compile.plugin.version>
+        <java.version>1.6</java.version>
+        <spring.version>3.2.4.RELEASE</spring.version>
+        <jbehave.version>3.7.5</jbehave.version>
     </properties>
 
     <dependencies>
