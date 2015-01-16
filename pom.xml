@@ -3,7 +3,6 @@
     <groupId>com.clemble.object-generator</groupId>
     <artifactId>object-generator</artifactId>
     <name>object-generator</name>
-    <version>7</version>
     
 <properties>
 <!-- Generic dependencies -->
