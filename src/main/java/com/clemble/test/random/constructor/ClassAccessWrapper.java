@@ -131,6 +131,8 @@ abstract public class ClassAccessWrapper<T> {
      */
     abstract public <S> ClassAccessWrapper<S> wrap(Class<S> forClass);
 
+
+
     /**
      * Wrapper that provides access only to publicly available fields, methods and constructors.
      * 
@@ -181,6 +183,9 @@ abstract public class ClassAccessWrapper<T> {
         }
 
     }
+
+
+
 
     /**
      * Wrapper that provides access only to all (public, protected, private) available fields, methods and constructors.
