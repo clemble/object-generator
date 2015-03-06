@@ -44,16 +44,16 @@
 
     <properties>
         <!-- Generic dependencies -->
-        <guava.version>13.0</guava.version>
+        <guava.version>18.0</guava.version>
         <reflections.version>0.9.8</reflections.version>
-        <commons-lang.version>3.1</commons-lang.version>
-        <commons-math.version>3.0</commons-math.version>
-        <javax.validation.version>1.0.0.GA</javax.validation.version>
+        <commons-lang.version>3.3.2</commons-lang.version>
+        <commons-math.version>3.4.1</commons-math.version>
+        <javax.validation.version>1.1.0.Final</javax.validation.version>
         <javax.inject.version>1.1.0.Final</javax.inject.version>
+        <reflections.version>0.9.9</reflections.version>
         <!-- Test dependencies -->
-        <junit.version>4.11</junit.version>
-        <reflections.version>0.9.8</reflections.version>
-        <java.version>1.6</java.version>
+        <junit.version>4.12</junit.version>
+        <java.version>1.8</java.version>
         <!-- Build plugins dependencies -->
         <plugin.nexus.version>1.6.3</plugin.nexus.version>
         <plugin.compile.version>2.3.2</plugin.compile.version>
