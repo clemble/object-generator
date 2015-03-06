@@ -123,15 +123,15 @@ public final class ClassConstructorSimple<T> extends ClassConstructor<T> {
         // Step 3. Selecting constructor that would best fit for processing
         ClassConstructorSimple<T> simpleConstructor = null;
         Constructor<?> bestCandidate = null;
-        for (Constructor<?> constructor : filteredConstructors) {
-            if (bestCandidate == null || constructor.getParameterTypes().length > bestCandidate.getParameterTypes().length) {
+        for (Constructor<?> candidate : filteredConstructors) {
+            if (bestCandidate == null || candidate.getParameterTypes().length > bestCandidate.getParameterTypes().length) {
                 // Step 4.1 Choosing generators for Constructor variable
-                ClassConstructorSimple<T> candidateConstructor =  new ClassConstructorSimple<T>((Constructor<T>) bestCandidate,
-                        valueGeneratorFactory.getValueGenerators(bestCandidate.getParameterTypes()));
+                ClassConstructorSimple<T> candidateConstructor =  new ClassConstructorSimple<T>((Constructor<T>) candidate,
+                    valueGeneratorFactory.getValueGenerators(candidate.getParameterTypes()));
                 try {
                     candidateConstructor.construct();
                     simpleConstructor = candidateConstructor;
-                    bestCandidate = constructor;
+                    bestCandidate = candidate;
                 } catch (Throwable throwable) {
                     // Ignore construction failure
                 }
