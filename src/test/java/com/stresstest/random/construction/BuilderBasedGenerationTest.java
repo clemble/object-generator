@@ -2,12 +2,9 @@ package com.stresstest.random.construction;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import com.clemble.test.random.ObjectGenerator;
-import com.clemble.test.runners.FrequentRunner;
 
-@RunWith(FrequentRunner.class)
 public class BuilderBasedGenerationTest {
 
     public abstract static class PublicInterface {
