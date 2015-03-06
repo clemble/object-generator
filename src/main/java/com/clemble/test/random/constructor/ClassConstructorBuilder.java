@@ -80,21 +80,21 @@ public class ClassConstructorBuilder<T> extends ClassConstructor<T> {
         return Collections2.filter(classToGenerate.getMethods(), new Predicate<Method>() {
             @Override
             public boolean apply(final Method method) {
-                if ((method.getModifiers() & Modifier.STATIC) == 0)
+            if ((method.getModifiers() & Modifier.STATIC) == 0)
+                return false;
+            // Checking that returned type has methods, that return instance of target class
+            boolean builder = false;
+            for (Method builderMethod : classToGenerate.wrap(method.getReturnType()).getMethods()) {
+                if (builderMethod.getDeclaringClass() != Object.class)
+                    builder = builder || classToGenerate.canBeReplacedWith(builderMethod.getReturnType());
+            }
+            if (!builder)
+                return false;
+            // Checking list of parameters
+            for (Class<?> methodArgument : method.getParameterTypes())
+                if (classToGenerate.canBeReplacedWith(methodArgument) || classToGenerate.canReplace(methodArgument))
                     return false;
-                // Checking that returned type has methods, that return instance of target class
-                boolean builder = false;
-                for (Method builderMethod : classToGenerate.wrap(method.getReturnType()).getMethods()) {
-                    if (builderMethod.getDeclaringClass() != Object.class)
-                        builder = builder || classToGenerate.canBeReplacedWith(builderMethod.getReturnType());
-                }
-                if (!builder)
-                    return false;
-                // Checking list of parameters
-                for (Class<?> methodArgument : method.getParameterTypes())
-                    if (classToGenerate.canBeReplacedWith(methodArgument) || classToGenerate.canReplace(methodArgument))
-                        return false;
-                return true;
+            return true;
             }
         });
 	}
@@ -109,31 +109,39 @@ public class ClassConstructorBuilder<T> extends ClassConstructor<T> {
 	 * @return {@link ClassConstructor} if it is possible to generate one, <code>null</code> otherwise.
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T> ClassConstructorBuilder<T> build(final ClassAccessWrapper<?> classToGenerate,
-			final ValueGeneratorFactory valueGeneratorFactory) {
-		// Step 1. Filter static methods, that return instance of the type as a result
-		Collection<Method> possibleBuilders = getPossibleBuilders(classToGenerate);
-		// Step 2. If there is no such method return null
-		if (possibleBuilders.size() == 0)
-			return null;
-		// Step 3. Select constructor with most arguments
-		Method builder = null;
-		for (Method candidate : possibleBuilders)
-			if (builder == null || candidate.getParameterTypes().length > builder.getParameterTypes().length)
-				builder = candidate;
-		// Step 4. Selecting most factory method based
-		ClassConstructorFactory<T> builderMethod = new ClassConstructorFactory<T>(builder,
-				valueGeneratorFactory.getValueGenerators(builder.getParameterTypes()));
-		ClassPropertySetter<T> builderPropertySetter = ((ClassPropertySetter<T>) ClassPropertySetter.constructPropertySetter(
-				classToGenerate.wrap(builder.getReturnType()), valueGeneratorFactory));
+	public static <T> ClassConstructorBuilder<T> build(final ClassAccessWrapper<?> classToGenerate, final ValueGeneratorFactory valueGeneratorFactory) {
+        // Step 1. Filter static methods, that return instance of the type as a result
+        Collection<Method> possibleBuilders = getPossibleBuilders(classToGenerate);
+        // Step 2. If there is no such method return null
+        if (possibleBuilders.size() == 0)
+            return null;
+        // Step 3. Select constructor with most arguments
+        ClassConstructorBuilder constructorBuilder = null;
+        Method builder = null;
+        for (Method candidate : possibleBuilders) {
+            if (constructorBuilder == null || candidate.getParameterTypes().length > builder.getParameterTypes().length) {
+                // Step 4. Selecting most factory method based
+                ClassConstructorFactory<T> builderMethod = new ClassConstructorFactory<T>(candidate, valueGeneratorFactory.getValueGenerators(candidate.getParameterTypes()));
+                ClassPropertySetter<T> builderPropertySetter = ((ClassPropertySetter<T>) ClassPropertySetter.constructPropertySetter(classToGenerate.wrap(candidate.getReturnType()), valueGeneratorFactory));
 
-		Method valueBuilderMethod = null;
-		for (Method constructorMethod : builder.getReturnType().getDeclaredMethods()) {
-			if (classToGenerate.canBeReplacedWith(constructorMethod.getReturnType())) {
-				valueBuilderMethod = constructorMethod;
-			}
-		}
+                Method valueBuilderMethod = null;
+                for (Method constructorMethod : candidate.getReturnType().getDeclaredMethods()) {
+                    if (classToGenerate.canBeReplacedWith(constructorMethod.getReturnType())) {
+                        valueBuilderMethod = constructorMethod;
+                    }
+                }
 
-		return new ClassConstructorBuilder<T>(builderMethod, builderPropertySetter, valueBuilderMethod);
-	}
+                ClassConstructorBuilder candidateBuilder = new ClassConstructorBuilder<T>(builderMethod, builderPropertySetter, valueBuilderMethod);
+                try {
+                    candidateBuilder.construct();
+                    constructorBuilder = candidateBuilder;
+                    builder = candidate;
+                } catch (Throwable throwable) {
+                    // Ignore this candidate builder if you can't build value from it
+                }
+            }
+        }
+        return constructorBuilder;
+    }
+
 }

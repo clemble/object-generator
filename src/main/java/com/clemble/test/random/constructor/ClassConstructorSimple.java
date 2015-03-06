@@ -108,33 +108,37 @@ public final class ClassConstructorSimple<T> extends ClassConstructor<T> {
 		// Step 1. Selecting appropriate constructor
 		if (constructors.length == 0)
 			return null;
-		// Step 2. Searching for default Constructor or constructor with least configurations
-		Constructor<?> bestCandidate = null;
+        // Step 2. Searching for default Constructor or constructor with least configurations
 		// Step 2.1 Filtering classes with parameters that can be cast to constructed class
 		Collection<Constructor<?>> filteredConstructors = Collections2.filter(Arrays.asList(constructors),
-				new Predicate<Constructor<?>>() {
-					@Override
-					public boolean apply(final Constructor<?> input) {
-						for (Class<?> parameter : input.getParameterTypes())
-							if (classToGenerate.canBeReplacedWith(parameter) || classToGenerate.canReplace(parameter))
-								return false;
-						return true;
-					}
-				});
-		// Step 3. Selecting constructor that would best fit for processing
-		for (Constructor<?> constructor : filteredConstructors) {
-			if (bestCandidate == null || constructor.getParameterTypes().length > bestCandidate.getParameterTypes().length) {
-				bestCandidate = constructor;
-			}
-		}
-		// Step 4. Returning selected constructor
-		if (bestCandidate != null) {
-			// Step 4.1 Choosing generators for Constructor variable
-			return new ClassConstructorSimple<T>((Constructor<T>) bestCandidate,
-					valueGeneratorFactory.getValueGenerators(bestCandidate.getParameterTypes()));
-		}
-		// Step 4.2 Returning default null value
-		return null;
-	}
+            new Predicate<Constructor<?>>() {
+                @Override
+                public boolean apply(final Constructor<?> input) {
+                for (Class<?> parameter : input.getParameterTypes())
+                    if (classToGenerate.canBeReplacedWith(parameter) || classToGenerate.canReplace(parameter))
+                        return false;
+                return true;
+            }
+        });
+        // Step 3. Selecting constructor that would best fit for processing
+        ClassConstructorSimple<T> simpleConstructor = null;
+        Constructor<?> bestCandidate = null;
+        for (Constructor<?> constructor : filteredConstructors) {
+            if (bestCandidate == null || constructor.getParameterTypes().length > bestCandidate.getParameterTypes().length) {
+                // Step 4.1 Choosing generators for Constructor variable
+                ClassConstructorSimple<T> candidateConstructor =  new ClassConstructorSimple<T>((Constructor<T>) bestCandidate,
+                        valueGeneratorFactory.getValueGenerators(bestCandidate.getParameterTypes()));
+                try {
+                    candidateConstructor.construct();
+                    simpleConstructor = candidateConstructor;
+                    bestCandidate = constructor;
+                } catch (Throwable throwable) {
+                    // Ignore construction failure
+                }
+            }
+        }
+        // Step 4.2 Returning default null value
+        return simpleConstructor;
+    }
 
 }

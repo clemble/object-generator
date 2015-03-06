@@ -20,7 +20,18 @@ public class ObjectGenerator {
     }
 
     public static <T> T generate(Class<T> classToGenerate) {
-        return getValueGenerator(classToGenerate).generate();
+        return generate(classToGenerate, 5);
+    }
+
+    public static <T> T generate(Class<T> classToGenerate, int attempts) {
+        try {
+            return getValueGenerator(classToGenerate).generate();
+        } catch (Throwable throwable) {
+            if (attempts != 0) {
+                return generate(classToGenerate, attempts - 1);
+            }
+            throw new RuntimeException(throwable);
+        }
     }
 
     public static <T> List<T> generateList(Class<T> classToGenerate) {
@@ -28,10 +39,11 @@ public class ObjectGenerator {
     }
 
     public static <T> List<T> generateList(Class<T> classToGenerate, int num) {
-        ValueGenerator<T> generator = getValueGenerator(classToGenerate);
         List<T> results = new ArrayList<T>();
-        for(int i = 0; i < num; i++)
-            results.add(generator.generate());
+        for(int i = 0; i < num; i++) {
+            T generated = generate(classToGenerate);
+            results.add(generated);
+        }
         return results;
     }
 
@@ -58,4 +70,5 @@ public class ObjectGenerator {
     public static void disableCaching() {
         valueGeneratorFactory = DEFAULT_VALUE_GENERATOR;
     }
+
 }

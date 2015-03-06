@@ -77,13 +77,13 @@ final public class ClassConstructorFactory<T> extends ClassConstructor<T> {
 	    return Collections2.filter(classToGenerate.getMethods(), new Predicate<Method>() {
             @Override
             public boolean apply(final Method method) {
-                if ((method.getModifiers() & Modifier.STATIC) == 0 || !classToGenerate.canBeReplacedWith(method.getReturnType()))
+            if ((method.getModifiers() & Modifier.STATIC) == 0 || !classToGenerate.canBeReplacedWith(method.getReturnType()))
+                return false;
+            for (Class<?> parameter : method.getParameterTypes()) {
+                if (classToGenerate.canBeReplacedWith(parameter) || classToGenerate.canReplace(parameter))
                     return false;
-                for (Class<?> parameter : method.getParameterTypes()) {
-                    if (classToGenerate.canBeReplacedWith(parameter) || classToGenerate.canReplace(parameter))
-                        return false;
-                }
-                return true;
+            }
+            return true;
             }
         });
 	}
@@ -119,7 +119,7 @@ final public class ClassConstructorFactory<T> extends ClassConstructor<T> {
                     constructorFactory = candidateFactory;
                 }
             } catch (Throwable throwable) {
-
+                // Ignore failure, try another one
             }
         }
         // Step 4. Creating factory method based
