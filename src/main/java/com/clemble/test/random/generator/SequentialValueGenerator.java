@@ -142,8 +142,9 @@ abstract public class SequentialValueGenerator<T>  extends AbstractValueGenerato
     
     /**
      * Generates random selection from list of enums
-     * 
-     * @param enumClass source enum classs
+     *
+     * @param <T> the type of enum class
+     * @param enumClass source enum class
      * @return random enum value
      */
     final public static <T> ValueGenerator<T> enumValueGenerator(final Class<T> enumClass) {
@@ -154,7 +155,8 @@ abstract public class SequentialValueGenerator<T>  extends AbstractValueGenerato
 
     /**
      * Generates random selection from list of elements
-     * 
+     *
+     * @param <T> the type of object in elements list
      * @param iterable
      *            {@link Iterable} of possible values.
      * @return ValueGenerator that returns one of the elements of original {@link Iterable}.

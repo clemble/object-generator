@@ -148,7 +148,7 @@ abstract public class AbstractValueGeneratorFactory implements ValueGeneratorFac
      * Produces {@link ValueGenerator} for specified {@link Class}.
      * 
      * @param klass
-     *            generated {@ling Class}
+     *            generated {@link Class}
      * @return {@link ValueGenerator} for procided {@link Class}
      */
     @SuppressWarnings("unchecked")

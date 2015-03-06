@@ -24,7 +24,7 @@ public class ClassValueGenerator<T> extends AbstractValueGenerator<T> {
      */
     final private ClassConstructor<T> objectConstructor;
     /**
-     * {@link CombinedClassPropertySetter} used for properties population.
+     * {@link ClassPropertySetter} used for properties population.
      */
     final private ClassPropertySetter<T> propertySetter;
 
@@ -32,7 +32,7 @@ public class ClassValueGenerator<T> extends AbstractValueGenerator<T> {
      * Default constructor.
      * 
      * @param objectConstructor {@link ClassConstructor} to use.
-     * @param propertySetter {@link CombinedClassPropertySetter} to use.
+     * @param propertySetter {@link ClassPropertySetter} to use.
      */
     public ClassValueGenerator(final ClassConstructor<T> objectConstructor, final ClassPropertySetter<T> propertySetter) {
         this.objectConstructor = checkNotNull(objectConstructor);
@@ -77,9 +77,9 @@ public class ClassValueGenerator<T> extends AbstractValueGenerator<T> {
     }
 
     /**
-     * Returns associated {@link CombinedClassPropertySetter}.
+     * Returns associated {@link ClassPropertySetter}.
      * 
-     * @return associated {@link CombinedClassPropertySetter}.
+     * @return associated {@link ClassPropertySetter}.
      */
     public ClassPropertySetter<T> getPropertySetter() {
         return propertySetter;

@@ -106,7 +106,7 @@ abstract public class ClassPropertySetter<T> {
                         ((ClassPropertyCollectionSetter<?>) secondPropertySetter).initialPropertySetter);
             } else if (firstSimpleProperty) {
                 return 1;
-            } else if (secondSimpleProperty) {
+            } else {
                 return -1;
             }
             return 0;
@@ -115,14 +115,20 @@ abstract public class ClassPropertySetter<T> {
 
     /**
      * Extracts and normalizes Member name.
+     *
+     * @param member member, which parameters to extract
+     * @return member name
      */
-    public static String extractMemberName(Member method) {
-        String fieldName = extractFieldName(method);
+    public static String extractMemberName(Member member) {
+        String fieldName = extractFieldName(member);
         return (fieldName.startsWith("set") || fieldName.startsWith("add") || fieldName.startsWith("get")) ? fieldName.substring(3) : fieldName;
     }
 
     /**
      * Extracts and normalizes field name.
+     *
+     * @param member member, which name to extract
+     * @return field name
      */
     public static String extractFieldName(Member member) {
         return member != null ? member.getName().toLowerCase() : "";
@@ -199,8 +205,8 @@ abstract public class ClassPropertySetter<T> {
      * 
      * @param field
      *            field to set
-     * @param valueGenerator
-     *            {@link ValueGenerator} to use.
+     * @param sourceClass
+     *            {@link ClassAccessWrapper} to use.
      * @return PropertySetter for the provided field.
      */
     public static <T> ClassPropertySetter<T> createFieldSetter(final ClassAccessWrapper<?> sourceClass, final Field field) {
@@ -218,8 +224,8 @@ abstract public class ClassPropertySetter<T> {
      * 
      * @param method
      *            target method.
-     * @param valueGenerator
-     *            {@link ValueGenerator} to use.
+     * @param sourceClass
+     *            {@link ClassAccessWrapper} to use.
      * @return constructed PropertySetter for the method, or <code>null</code> if such PropertySetter can't be created.
      */
     public static <T> ClassPropertySetter<T> createMethodSetter(final ClassAccessWrapper<?> sourceClass, final Method method) {
@@ -238,8 +244,8 @@ abstract public class ClassPropertySetter<T> {
      *            target field.
      * @param method
      *            target set method.
-     * @param valueGenerator
-     *            {@link ValueGenerator} to use.
+     * @param sourceClass
+     *            {@link ClassAccessWrapper} to use.
      * @return constructed PropertySetter.
      */
     public static <T> ClassPropertySetter<T> create(final ClassAccessWrapper<?> sourceClass, final Field field, final Method method) {
@@ -257,7 +263,7 @@ abstract public class ClassPropertySetter<T> {
             if (Collection.class.isAssignableFrom(targetClass)) {
                 if (field != null)
                     return new ClassPropertyCollectionSetter<T>(sourceClass, field);
-                else if (method != null)
+                else
                     return new ClassPropertyCollectionSetter<T>(sourceClass, method);
             } else {
                 valueGenerator = ObjectGenerator.getValueGenerator(targetClass);
@@ -269,7 +275,8 @@ abstract public class ClassPropertySetter<T> {
 
     /**
      * Extracts all possible PropertySetters with specified access level.
-     * 
+     * @param <T>
+     *            source class parameter, for whom property setters are needed.
      * @param searchClass
      *            {@link ClassAccessWrapper} access wrapper to generate properties for.
      * @return list of all PropertySetter it can set, ussing specified field.

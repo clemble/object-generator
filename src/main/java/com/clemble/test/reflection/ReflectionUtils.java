@@ -8,9 +8,8 @@ import org.reflections.Reflections;
 
 /**
  * Collection of internal Reflection utilities used by stresstest packages.
- * 
- * @author Anton Oparin
  *
+ * @author Anton Oparin
  */
 public class ReflectionUtils {
 
@@ -23,8 +22,9 @@ public class ReflectionUtils {
 
     /**
      * Searches for annotation in provided and all parent Classes.
-     * 
-     * @param klass source Class
+     *
+     * @param <T>             the type of annotation class
+     * @param klass           source Class
      * @param annotationClass searched annotation
      * @return annotation on this Class or any of it's subclasses
      */
@@ -37,27 +37,29 @@ public class ReflectionUtils {
 
     /**
      * Searches for possible implementations of the package in original package of the Class and all underlying packages.
-     * 
-     * @param klass     source Class
-     * @return          all implementations that can be used as Class 
-     *                  from original package and all sub packages.
+     *
+     * @param <T>   the type of object to search
+     * @param klass source Class
+     * @return all implementations that can be used as Class
+     * from original package and all sub packages.
      */
     public static <T> Set<Class<? extends T>> findPossibleImplementations(Class<T> klass) {
-        if(klass == null || klass.getPackage() == null || klass.getPackage().getName() == null)
+        if (klass == null || klass.getPackage() == null || klass.getPackage().getName() == null)
             return Collections.emptySet();
         String packageName = klass.getPackage().toString().replace("package ", "");
         return findPossibleImplementations(packageName, klass);
     }
-    
+
     /**
      * Searches for possible implementations of the package in provided package and all underlying packages.
-     * 
-     * @param klass         source Class
-     * @param packageName   search start point
-     * @return              all implementations that can be used as Class 
-     *                      from provided package and all sub packages.
+     *
+     * @param <T>         the type of object to search
+     * @param klass       source Class
+     * @param packageName search start point
+     * @return all implementations that can be used as Class
+     * from provided package and all sub packages.
      */
-    public static <T> Set<Class<? extends T>> findPossibleImplementations(String packageName,Class<T> klass) {
+    public static <T> Set<Class<? extends T>> findPossibleImplementations(String packageName, Class<T> klass) {
         Reflections reflections = new Reflections(packageName);
         Set<Class<? extends T>> subTypes = reflections.getSubTypesOf(klass);
         return subTypes;

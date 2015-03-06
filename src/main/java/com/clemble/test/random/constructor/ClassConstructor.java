@@ -30,7 +30,8 @@ abstract public class ClassConstructor<T> {
 
     /**
      * Generates {@link ClassConstructor}. It firstly checks Constructor, than FactoryMethod and the last is Builder based construction.
-     * 
+     *
+     * @param <T> the type of object to construct
      * @param classToGenerate
      *            {@link Class} to generate.
      * @param valueGeneratorFactory

@@ -94,7 +94,8 @@ public final class ClassConstructorSimple<T> extends ClassConstructor<T> {
 
 	/**
 	 * Tries to build {@link ClassConstructor} based on constructor.
-	 * 
+     *
+	 * @param <T> the type of object to construct
 	 * @param classToGenerate
 	 *            {@link Class} to generate.
 	 * @param valueGeneratorFactory
@@ -102,7 +103,7 @@ public final class ClassConstructorSimple<T> extends ClassConstructor<T> {
 	 * @return {@link ClassConstructor} if it is possible to generate one, <code>null</code> otherwise.
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T, R extends T> ClassConstructorSimple<T> build(final ClassAccessWrapper<?> classToGenerate,
+	public static <T> ClassConstructorSimple<T> build(final ClassAccessWrapper<?> classToGenerate,
 			final ValueGeneratorFactory valueGeneratorFactory) {
 		Constructor<?>[] constructors = classToGenerate.getConstructors();
 		// Step 1. Selecting appropriate constructor

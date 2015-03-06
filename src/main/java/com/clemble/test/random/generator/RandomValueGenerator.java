@@ -218,7 +218,8 @@ public abstract class RandomValueGenerator<T> extends AbstractValueGenerator<T> 
 
     /**
      * Generates random selection from list of enums
-     * 
+     *
+     * @param <T> the type of enum class
      * @param enumClass source enum classs
      * @return random enum value
      */
@@ -230,7 +231,8 @@ public abstract class RandomValueGenerator<T> extends AbstractValueGenerator<T> 
 
     /**
      * Generates random selection from list of elements
-     * 
+     *
+     * @param <T> the type of elements in list
      * @param iterable
      *            {@link Iterable} of possible values.
      * @return ValueGenerator that returns one of the elements of original {@link Iterable}.

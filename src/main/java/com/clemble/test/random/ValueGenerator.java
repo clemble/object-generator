@@ -12,7 +12,7 @@ public interface ValueGenerator<T> {
 
 	/**
 	 * Generates random T value.
-	 * 
+	 *
 	 * @return random T value
 	 */
 	public T generate();

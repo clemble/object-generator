@@ -7,8 +7,6 @@
     <name>object-generator</name>
     <version>0.1.6-SNAPSHOT</version>
 
-    <packaging>pom</packaging>
-
     <distributionManagement>
         <snapshotRepository>
             <id>ossrh</id>
@@ -53,13 +51,13 @@
         <reflections.version>0.9.9</reflections.version>
         <!-- Test dependencies -->
         <junit.version>4.12</junit.version>
-        <java.version>1.8</java.version>
+        <java.version>1.6</java.version>
         <!-- Build plugins dependencies -->
         <plugin.nexus.version>1.6.3</plugin.nexus.version>
         <plugin.compile.version>2.3.2</plugin.compile.version>
         <plugin.surefire.version>2.18.1</plugin.surefire.version>
         <plugin.source.version>2.2.1</plugin.source.version>
-        <plugin.javadoc.verision>2.9.1</plugin.javadoc.verision>
+        <plugin.javadoc.verision>2.10.1</plugin.javadoc.verision>
         <plugin.gpg.version>1.5</plugin.gpg.version>
     </properties>
 
@@ -114,6 +112,32 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${plugin.surefire.version}</version>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>${plugin.source.version}</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>${plugin.javadoc.verision}</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
@@ -132,32 +156,6 @@
                             <nexusUrl>https://oss.sonatype.org/</nexusUrl>
                             <autoReleaseAfterClose>true</autoReleaseAfterClose>
                         </configuration>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-source-plugin</artifactId>
-                        <version>${plugin.source.version}</version>
-                        <executions>
-                            <execution>
-                                <id>attach-sources</id>
-                                <goals>
-                                    <goal>jar-no-fork</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-javadoc-plugin</artifactId>
-                        <version>${plugin.javadoc.verision}</version>
-                        <executions>
-                            <execution>
-                                <id>attach-javadocs</id>
-                                <goals>
-                                    <goal>jar</goal>
-                                </goals>
-                            </execution>
-                        </executions>
                     </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>

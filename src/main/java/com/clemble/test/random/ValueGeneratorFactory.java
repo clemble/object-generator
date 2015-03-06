@@ -15,15 +15,16 @@ public interface ValueGeneratorFactory {
 
     /**
      * Produces {@link ValueGenerator} for specified {@link Class}.
-     * 
+     *
+     * @param <T> the type of object to generate
      * @param klass
-     *            generated {@ling Class}
+     *            generated {@link Class}
      * @return {@link ValueGenerator} for procided {@link Class}
      */
     public <T> ValueGenerator<T> getValueGenerator(Class<T> klass);
 
     /**
-     * Produces {@Collection} of {@link ValueGenerator} for provided {@link Class}es.
+     * Produces {@link Collection} of {@link ValueGenerator} for provided {@link Class}es.
      * 
      * @param parameters
      *            Collection of {@link Class}s to generate.

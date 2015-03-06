@@ -90,7 +90,8 @@ final public class ClassConstructorFactory<T> extends ClassConstructor<T> {
 	
     /**
      * Tries to build {@link ClassConstructor} based on factory method.
-     * 
+     *
+     * @param <T> the type of object to construct
      * @param classToGenerate
      *            {@link Class} to generate.
      * @param valueGeneratorFactory

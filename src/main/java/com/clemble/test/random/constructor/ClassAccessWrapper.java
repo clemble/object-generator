@@ -28,9 +28,9 @@ abstract public class ClassAccessWrapper<T> {
     abstract public Class<T> getSourceClass();
 
     /**
-     * Wrapper for {@link Class.getModifiers()} method.
+     * Wrapper for {@link Class#getModifiers()} method.
      * 
-     * @return look at {@link Class.getModifiers()}.
+     * @return look at {@link Class#getModifiers()}.
      */
     final public int getModifiers() {
         return getSourceClass().getModifiers();
@@ -87,7 +87,7 @@ abstract public class ClassAccessWrapper<T> {
     }
 
     /**
-     * {@link Collection} of {@link Methods} available for access with this wrapper.
+     * {@link Collection} of {@link Method}s available for access with this wrapper.
      * 
      * @return {@link Method}s available for access with this access level.
      */
@@ -124,7 +124,8 @@ abstract public class ClassAccessWrapper<T> {
 
     /**
      * Returns wrapper of the {@link Class}, with the same level of access as original wrapper.
-     * 
+     *
+     * @param <S> source class to wrap
      * @param forClass
      *            {@link Class} to wrap.
      * @return wrapper of the {@link Class}, with the same level of access as original wrapper.
@@ -241,7 +242,8 @@ abstract public class ClassAccessWrapper<T> {
 
     /**
      * Factory method, that creates wrapper with only public access to variables in Class.
-     * 
+     *
+     * @param <T> type of class to wrap
      * @param classToWrap
      *            Class to wrap.
      * @return {@link ClassAccessWrapper} with only publicly available access.
@@ -252,7 +254,8 @@ abstract public class ClassAccessWrapper<T> {
 
     /**
      * Factory method, that creates wrapper with access to all variables in Class.
-     * 
+     *
+     * @param <T> type of class to wrap
      * @param classToWrap
      *            Class to wrap.
      * @return {@link ClassAccessWrapper} with only publicly available access.
