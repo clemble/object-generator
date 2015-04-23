@@ -10,10 +10,9 @@ import java.util.concurrent.Callable;
 
 import org.apache.commons.lang3.RandomStringUtils;
 
-import com.clemble.test.random.AbstractValueGenerator;
 import com.google.common.collect.ImmutableMap;
 
-public abstract class RandomValueGenerator<T> extends AbstractValueGenerator<T> {
+public abstract class RandomValueGenerator {
 
     /**
      * Generic source of randomness in all value generators (shared for performance reasons).
