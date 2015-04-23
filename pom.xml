@@ -51,7 +51,7 @@
         <reflections.version>0.9.9</reflections.version>
         <!-- Test dependencies -->
         <junit.version>4.12</junit.version>
-        <java.version>1.6</java.version>
+        <java.version>1.8</java.version>
         <!-- Build plugins dependencies -->
         <plugin.nexus.version>1.6.3</plugin.nexus.version>
         <plugin.compile.version>2.3.2</plugin.compile.version>

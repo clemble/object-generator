@@ -1,6 +1,7 @@
 package com.clemble.test.random;
 
 import java.util.Collection;
+import java.util.concurrent.Callable;
 
 import com.clemble.test.random.constructor.ClassPropertySetterRegistry;
 
@@ -14,26 +15,26 @@ import com.clemble.test.random.constructor.ClassPropertySetterRegistry;
 public interface ValueGeneratorFactory {
 
     /**
-     * Produces {@link ValueGenerator} for specified {@link Class}.
+     * Produces {@link Callable} for specified {@link Class}.
      *
      * @param <T> the type of object to generate
      * @param klass
      *            generated {@link Class}
-     * @return {@link ValueGenerator} for procided {@link Class}
+     * @return {@link Callable} for procided {@link Class}
      */
-    public <T> ValueGenerator<T> getValueGenerator(Class<T> klass);
+    public <T> Callable<T> getValueGenerator(Class<T> klass);
 
     /**
-     * Produces {@link Collection} of {@link ValueGenerator} for provided {@link Class}es.
+     * Produces {@link Collection} of {@link Callable} for provided {@link Class}es.
      * 
      * @param parameters
      *            Collection of {@link Class}s to generate.
-     * @return {@link Collection} of {@link ValueGenerator} to use.
+     * @return {@link Collection} of {@link Callable} to use.
      */
-    public Collection<ValueGenerator<?>> getValueGenerators(Class<?>[] parameters);
+    public Collection<Callable<?>> getValueGenerators(Class<?>[] parameters);
 
     public ClassPropertySetterRegistry getPropertySetterManager();
 
-    public <T> void put(Class<T> klass, ValueGenerator<T> valueGenerator);
+    public <T> void put(Class<T> klass, Callable<T> valueGenerator);
 
 }

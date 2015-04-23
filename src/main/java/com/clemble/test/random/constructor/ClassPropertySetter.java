@@ -10,9 +10,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.TreeSet;
+import java.util.concurrent.Callable;
 
 import com.clemble.test.random.ObjectGenerator;
-import com.clemble.test.random.ValueGenerator;
 import com.clemble.test.random.ValueGeneratorFactory;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
@@ -35,9 +35,9 @@ abstract public class ClassPropertySetter<T> {
      */
     abstract public void setProperties(Object target);
 
-    abstract public List<ValueGenerator<?>> getValueGenerators();
+    abstract public List<Callable<?>> getValueGenerators();
 
-    abstract public ClassPropertySetter<T> clone(List<ValueGenerator<?>> generatorsToUse);
+    abstract public ClassPropertySetter<T> clone(List<Callable<?>> generatorsToUse);
 
     /**
      * Returns affected Class. Supposed to be used primerely inside invocation.
@@ -238,7 +238,7 @@ abstract public class ClassPropertySetter<T> {
     }
 
     /**
-     * Generates PropertySetter for provided Field, Method and {@link ValueGenerator}.
+     * Generates PropertySetter for provided Field, Method and {@link Callable}.
      * 
      * @param field
      *            target field.
@@ -254,7 +254,7 @@ abstract public class ClassPropertySetter<T> {
 
     @SuppressWarnings("unchecked")
     public static <T> ClassPropertySetter<T> create(final ClassAccessWrapper<?> sourceClass, final Field field, final Method method,
-            ValueGenerator<T> valueGenerator) {
+            Callable<T> valueGenerator) {
         if(field == null && method == null)
             return null;
 

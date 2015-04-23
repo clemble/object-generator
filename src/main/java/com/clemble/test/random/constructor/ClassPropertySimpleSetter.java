@@ -4,8 +4,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.List;
-
-import com.clemble.test.random.ValueGenerator;
+import java.util.concurrent.Callable;
 
 /**
  * Property setter implementation for a plain field.
@@ -28,7 +27,7 @@ final class ClassPropertySimpleSetter<T> extends ClassPropertySetter<T> {
 	/**
 	 * Value Generator to use to set the value property
 	 */
-	final private ValueGenerator<?> valueGenerator;
+	final private Callable<?> valueGenerator;
 
 	/**
 	 * Default constructor.
@@ -40,7 +39,7 @@ final class ClassPropertySimpleSetter<T> extends ClassPropertySetter<T> {
 	 * @param valueGenerator
 	 *            ValueGenerator to use.
 	 */
-	ClassPropertySimpleSetter(final Field field, final Method method, final ValueGenerator<T> valueGenerator) {
+	ClassPropertySimpleSetter(final Field field, final Method method, final Callable<T> valueGenerator) {
 		this.field = field;
 		this.method = method;
 		this.valueGenerator = valueGenerator;
@@ -48,9 +47,10 @@ final class ClassPropertySimpleSetter<T> extends ClassPropertySetter<T> {
 
 	@Override
 	public void setProperties(final Object target) {
-		Object valueToSet = valueGenerator.generate();
-		// Step 1. Setting value, preferring method over field
-		try {
+        Object valueToSet = null;
+        try {
+            valueToSet = valueGenerator.call();
+            // Step 1. Setting value, preferring method over field
 			if (method != null) {
 				method.invoke(target, valueToSet);
 			} else {
@@ -84,14 +84,14 @@ final class ClassPropertySimpleSetter<T> extends ClassPropertySetter<T> {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<ValueGenerator<?>> getValueGenerators() {
-		return (List<ValueGenerator<?>>)(List<?>) Collections.singletonList(valueGenerator);
+	public List<Callable<?>> getValueGenerators() {
+		return (List<Callable<?>>)(List<?>) Collections.singletonList(valueGenerator);
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public ClassPropertySetter<T> clone(List<ValueGenerator<?>> generatorsToUse) {
-		return new ClassPropertySimpleSetter<T>(field, method, (ValueGenerator<T>) generatorsToUse.remove(0));
+	public ClassPropertySetter<T> clone(List<Callable<?>> generatorsToUse) {
+		return new ClassPropertySimpleSetter<T>(field, method, (Callable<T>) generatorsToUse.remove(0));
 	}
 
 }

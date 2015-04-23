@@ -7,8 +7,8 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.Callable;
 
-import com.clemble.test.random.ValueGenerator;
 import com.clemble.test.random.ValueGeneratorFactory;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
@@ -28,9 +28,9 @@ final public class ClassConstructorFactory<T> extends ClassConstructor<T> {
      */
     final private Method builder;
     /**
-     * {@link Collection} of {@link ValueGenerator} to use in factory method.
+     * {@link Collection} of {@link Callable} to use in factory method.
      */
-    final private List<ValueGenerator<?>> constructorValueGenerators;
+    final private List<Callable<?>> constructorValueGenerators;
 
     /**
      * Default constructor.
@@ -38,23 +38,23 @@ final public class ClassConstructorFactory<T> extends ClassConstructor<T> {
      * @param builder
      *            factory method to use.
      * @param constructorValueGenerators
-     *            {@link Collection} of {@link ValueGenerator} to use.
+     *            {@link Collection} of {@link java.util.concurrent.Callable} to use.
      */
-    public ClassConstructorFactory(Method builder, Collection<ValueGenerator<?>> constructorValueGenerators) {
+    public ClassConstructorFactory(Method builder, Collection<Callable<?>> constructorValueGenerators) {
         this.builder = checkNotNull(builder);
-        this.constructorValueGenerators = ImmutableList.<ValueGenerator<?>>copyOf(checkNotNull(constructorValueGenerators));
+        this.constructorValueGenerators = ImmutableList.<Callable<?>>copyOf(checkNotNull(constructorValueGenerators));
     }
 
     @Override
 	@SuppressWarnings({"rawtypes", "unchecked"})
     public T construct() {
-        // Step 1. Generate value for Constructor
-        Collection values = new ArrayList();
-        for (ValueGenerator<?> valueGenerator : constructorValueGenerators)
-            values.add(valueGenerator.generate());
-        // Step 2. Invoke constructor, creating empty Object
         Object generatedObject = null;
         try {
+            // Step 1. Generate value for Constructor
+            Collection values = new ArrayList();
+            for (Callable<?> valueGenerator : constructorValueGenerators)
+                values.add(valueGenerator.call());
+            // Step 2. Invoke constructor, creating empty Object
             builder.setAccessible(true);
             generatedObject = values.size() == 0 ? builder.invoke(null, ImmutableList.of().toArray()) : builder.invoke(null, values.toArray());
         } catch (Exception e) {
@@ -64,12 +64,12 @@ final public class ClassConstructorFactory<T> extends ClassConstructor<T> {
     }
 
 	@Override
-	public List<ValueGenerator<?>> getValueGenerators() {
+	public List<Callable<?>> getValueGenerators() {
 		return constructorValueGenerators;
 	}
 
 	@Override
-	public ClassConstructor<T> clone(List<ValueGenerator<?>> generatorsToUse) {
+	public ClassConstructor<T> clone(List<Callable<?>> generatorsToUse) {
 		return new ClassConstructorFactory<T>(builder, generatorsToUse);
 	}
 

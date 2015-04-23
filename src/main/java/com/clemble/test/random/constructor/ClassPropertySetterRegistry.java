@@ -12,8 +12,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.concurrent.Callable;
 
-import com.clemble.test.random.ValueGenerator;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 
@@ -75,17 +75,17 @@ final public class ClassPropertySetterRegistry {
     }
 
     /**
-     * Registers {@link ValueGenerator} for specified field/method in the Class, all subClasses will use this register as well.
+     * Registers {@link java.util.concurrent.Callable} for specified field/method in the Class, all subClasses will use this register as well.
      * 
      * @param searchClass
      *            Class to search.
      * @param name
      *            field/method name
      * @param valueGenerator
-     *            {@link ValueGenerator} to use.
+     *            {@link Callable} to use.
      */
     @SuppressWarnings({ "rawtypes", "unchecked" })
-	public <T> void register(final Class<?> searchClass, final String name, final ValueGenerator<T> valueGenerator) {
+	public <T> void register(final Class<?> searchClass, final String name, final Callable<T> valueGenerator) {
         if ((searchClass.getModifiers() & (Modifier.ABSTRACT | Modifier.INTERFACE)) > 0) {
             abstractPropertySelectors.add(new AbstractPropertySetter(searchClass, name, valueGenerator));
         } else {
@@ -93,7 +93,7 @@ final public class ClassPropertySetterRegistry {
         }
     }
     
-    private <T> ClassPropertySetter<T> constructSetter(final Class<?> searchClass, final String name, final ValueGenerator<T> valueGenerator) {
+    private <T> ClassPropertySetter<T> constructSetter(final Class<?> searchClass, final String name, final Callable<T> valueGenerator) {
         final String possibleName = name.toLowerCase();
         final ClassAccessWrapper<?> wrapper = ClassAccessWrapper.createAllMethodsAccessor(searchClass);
         final Field possibleField = ClassPropertySetter.findField(wrapper, possibleName);
@@ -107,9 +107,9 @@ final public class ClassPropertySetterRegistry {
     public static class AbstractPropertySetter<T> {
         final private Class<?> searchClass;
         final private String name;
-        final private ValueGenerator<T> valueGenerator;
+        final private Callable<T> valueGenerator;
 
-        public AbstractPropertySetter(Class<?> searchClass, String name, ValueGenerator<T> valueGenerator) {
+        public AbstractPropertySetter(Class<?> searchClass, String name, Callable<T> valueGenerator) {
             assert (searchClass.getModifiers() & (Modifier.ABSTRACT | Modifier.INTERFACE)) > 0;
             this.searchClass = checkNotNull(searchClass);
             this.name = checkNotNull(name);
@@ -124,7 +124,7 @@ final public class ClassPropertySetterRegistry {
             return name;
         }
 
-        public ValueGenerator<T> getValueGenerator() {
+        public Callable<T> getValueGenerator() {
             return valueGenerator;
         }
     }

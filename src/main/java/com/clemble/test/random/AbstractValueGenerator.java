@@ -1,15 +1,17 @@
 package com.clemble.test.random;
 
-abstract public class AbstractValueGenerator<T> implements ValueGenerator<T>, Cloneable {
+import java.util.concurrent.Callable;
+
+abstract public class AbstractValueGenerator<T> implements Callable<T>, Cloneable {
 	
 	public int scope() {
 		return 1;
 	}
 
 	@SuppressWarnings("unchecked")
-	public ValueGenerator<T> clone() {
+	public Callable<T> clone() {
 		try {
-			return (ValueGenerator<T>) super.clone();
+			return (Callable<T>) super.clone();
 		} catch (CloneNotSupportedException e) {
 			throw new RuntimeException(e);
 		}

@@ -1,14 +1,15 @@
 package com.clemble.test.random.generator;
 
 import com.clemble.test.random.AbstractValueGeneratorFactory;
-import com.clemble.test.random.ValueGenerator;
 import com.clemble.test.random.ValueGeneratorFactory;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 
+import java.util.concurrent.Callable;
+
 /**
- * {@link ValueGeneratorFactory} implementation that uses caching to optimize {@link ValueGenerator} production.
+ * {@link ValueGeneratorFactory} implementation that uses caching to optimize {@link Callable} production.
  * 
  * @author Anton Oparin
  * 
@@ -20,10 +21,10 @@ public class CachedValueGeneratorFactory extends AbstractValueGeneratorFactory {
     /**
      * Google LoadingCache that is used as a primary cache implementation.
      */
-    final private LoadingCache<Class<?>, ValueGenerator<?>> cachedValueGenerators = CacheBuilder.newBuilder().build(
-            new CacheLoader<Class<?>, ValueGenerator<?>>() {
+    final private LoadingCache<Class<?>, Callable<?>> cachedValueGenerators = CacheBuilder.newBuilder().build(
+            new CacheLoader<Class<?>, Callable<?>>() {
                 @Override
-                public ValueGenerator<?> load(Class<?> klass) throws Exception {
+                public Callable<?> load(Class<?> klass) throws Exception {
                     return valueGeneratorFactory.getValueGenerator(klass);
                 }
             });
@@ -35,21 +36,21 @@ public class CachedValueGeneratorFactory extends AbstractValueGeneratorFactory {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T> ValueGenerator<T> getValueGenerator(Class<T> klass) {
+    public <T> Callable<T> getValueGenerator(Class<T> klass) {
         try {
-            return (ValueGenerator<T>) cachedValueGenerators.get(klass);
+            return (Callable<T>) cachedValueGenerators.get(klass);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
     @Override
-    protected <T> ValueGenerator<T> enumValueGenerator(Class<T> klass) {
+    protected <T> Callable<T> enumValueGenerator(Class<T> klass) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    protected <T> ValueGenerator<T> arrayValueGenerator(Class<?> klass) {
+    protected <T> Callable<T> arrayValueGenerator(Class<?> klass) {
         throw new UnsupportedOperationException();
     }
 

@@ -1,13 +1,13 @@
 package com.stresstest.random.construction;
 
 import java.util.Collection;
+import java.util.concurrent.Callable;
 
 import org.junit.Assert;
 
 import org.junit.Test;
 
 import com.clemble.test.random.ObjectGenerator;
-import com.clemble.test.random.ValueGenerator;
 import com.clemble.test.random.ValueGeneratorFactory;
 import com.clemble.test.random.constructor.ClassConstructorBuilder;
 import com.clemble.test.random.constructor.ClassValueGenerator;
@@ -49,7 +49,7 @@ public class ConstructionBuilderStructureTest {
 
     @Test
     public void testPrivateBuilderConstructorUsed() {
-        ValueGenerator<PrivateBuilderBasedClass> factoryGenerator = valueGeneratorFactory.getValueGenerator(PrivateBuilderBasedClass.class);
+        Callable<PrivateBuilderBasedClass> factoryGenerator = valueGeneratorFactory.getValueGenerator(PrivateBuilderBasedClass.class);
         ClassValueGenerator<PrivateBuilderBasedClass> classValueGenerator = (ClassValueGenerator<PrivateBuilderBasedClass>) factoryGenerator;
         Assert.assertTrue(classValueGenerator.getObjectConstructor() instanceof ClassConstructorBuilder);
         Assert.assertNotNull(classValueGenerator.getPropertySetter());
@@ -85,7 +85,7 @@ public class ConstructionBuilderStructureTest {
 
     @Test
     public void testProtectedBuilderConstructorUsed() {
-        ValueGenerator<ProtectedBuilderBasedClass> factoryGenerator = valueGeneratorFactory.getValueGenerator(ProtectedBuilderBasedClass.class);
+        Callable<ProtectedBuilderBasedClass> factoryGenerator = valueGeneratorFactory.getValueGenerator(ProtectedBuilderBasedClass.class);
         ClassValueGenerator<ProtectedBuilderBasedClass> classValueGenerator = (ClassValueGenerator<ProtectedBuilderBasedClass>) factoryGenerator;
         Assert.assertTrue(classValueGenerator.getObjectConstructor() instanceof ClassConstructorBuilder);
         Assert.assertNotNull(classValueGenerator.getPropertySetter());
@@ -121,7 +121,7 @@ public class ConstructionBuilderStructureTest {
 
     @Test
     public void testDefaultBuilderConstructorUsed() {
-        ValueGenerator<DefaultBuilderBasedClass> factoryGenerator = valueGeneratorFactory.getValueGenerator(DefaultBuilderBasedClass.class);
+        Callable<DefaultBuilderBasedClass> factoryGenerator = valueGeneratorFactory.getValueGenerator(DefaultBuilderBasedClass.class);
         ClassValueGenerator<DefaultBuilderBasedClass> classValueGenerator = (ClassValueGenerator<DefaultBuilderBasedClass>) factoryGenerator;
         Assert.assertTrue(classValueGenerator.getObjectConstructor() instanceof ClassConstructorBuilder);
         Assert.assertNotNull(classValueGenerator.getPropertySetter());
@@ -157,7 +157,7 @@ public class ConstructionBuilderStructureTest {
 
     @Test
     public void testPublicBuilderConstructorUsed() {
-        ValueGenerator<PublicBuilderBasedClass> factoryGenerator = valueGeneratorFactory.getValueGenerator(PublicBuilderBasedClass.class);
+        Callable<PublicBuilderBasedClass> factoryGenerator = valueGeneratorFactory.getValueGenerator(PublicBuilderBasedClass.class);
         ClassValueGenerator<PublicBuilderBasedClass> classValueGenerator = (ClassValueGenerator<PublicBuilderBasedClass>) factoryGenerator;
         Assert.assertTrue(classValueGenerator.getObjectConstructor() instanceof ClassConstructorBuilder);
         Assert.assertNotNull(classValueGenerator.getPropertySetter());

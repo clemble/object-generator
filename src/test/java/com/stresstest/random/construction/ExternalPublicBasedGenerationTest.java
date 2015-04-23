@@ -5,7 +5,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.clemble.test.random.ObjectGenerator;
-import com.clemble.test.random.ValueGenerator;
 import com.clemble.test.random.constructor.ClassConstructorBuilder;
 import com.clemble.test.random.constructor.ClassValueGenerator;
 import com.stresstest.random.construction.external.PrivateBuilderBasedClass;
@@ -19,6 +18,8 @@ import com.stresstest.random.construction.external.UncreatableInterface;
 import com.stresstest.random.construction.external.UncreatableObject;
 import com.stresstest.random.construction.external.impl.PublicAbstractClassImpl;
 import com.stresstest.random.construction.external.impl.PublicInterfaceImpl;
+
+import java.util.concurrent.Callable;
 
 public class ExternalPublicBasedGenerationTest {
 
@@ -53,11 +54,11 @@ public class ExternalPublicBasedGenerationTest {
     }
 
     @Test
-    public void testPrivateBuilderBasedClassCreation() {
-        ValueGenerator<PrivateBuilderBasedClass> valueGenerator = ObjectGenerator.getValueGenerator(PrivateBuilderBasedClass.class);
+    public void testPrivateBuilderBasedClassCreation() throws Exception {
+        Callable<PrivateBuilderBasedClass> valueGenerator = ObjectGenerator.getValueGenerator(PrivateBuilderBasedClass.class);
         ClassValueGenerator<PrivateBuilderBasedClass> classValueGenerator = (ClassValueGenerator<PrivateBuilderBasedClass>) valueGenerator;
         Assert.assertTrue(classValueGenerator.getObjectConstructor() instanceof ClassConstructorBuilder);
-        Assert.assertNotNull(valueGenerator.generate());
+        Assert.assertNotNull(valueGenerator.call());
     }
 
     

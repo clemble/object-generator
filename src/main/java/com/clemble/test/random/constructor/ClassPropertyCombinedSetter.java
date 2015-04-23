@@ -3,8 +3,8 @@ package com.clemble.test.random.constructor;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.Callable;
 
-import com.clemble.test.random.ValueGenerator;
 import com.google.common.collect.ImmutableList;
 
 /**
@@ -12,8 +12,7 @@ import com.google.common.collect.ImmutableList;
  * 
  * @author Anton Oparin
  * 
- * @param <T>
- *            parameterized {@link Class}.
+ * @param <T> parameterized {@link Class}.
  */
 final class ClassPropertyCombinedSetter<T> extends ClassPropertySetter<T> {
 
@@ -46,15 +45,15 @@ final class ClassPropertyCombinedSetter<T> extends ClassPropertySetter<T> {
 	}
 
 	@Override
-	public List<ValueGenerator<?>> getValueGenerators() {
-		List<ValueGenerator<?>> valueGenerators = new ArrayList<ValueGenerator<?>>();
+	public List<Callable<?>> getValueGenerators() {
+		List<Callable<?>> valueGenerators = new ArrayList<Callable<?>>();
 		for(ClassPropertySetter<?> propertySetter: propertySetters)
 			valueGenerators.addAll(propertySetter.getValueGenerators());
 		return valueGenerators;
 	}
 
 	@Override
-	public ClassPropertySetter<T> clone(List<ValueGenerator<?>> generatorsToUse) {
+	public ClassPropertySetter<T> clone(List<Callable<?>> generatorsToUse) {
 		List<ClassPropertySetter<?>> newPropertySetters = new ArrayList<ClassPropertySetter<?>>();
 		for(ClassPropertySetter<?> propertySetter: propertySetters) {
 			newPropertySetters.add(propertySetter.clone(generatorsToUse));

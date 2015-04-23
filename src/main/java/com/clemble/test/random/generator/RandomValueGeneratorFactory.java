@@ -1,8 +1,9 @@
 package com.clemble.test.random.generator;
 
 import com.clemble.test.random.AbstractValueGeneratorFactory;
-import com.clemble.test.random.ValueGenerator;
 import com.clemble.test.random.constructor.ClassPropertySetterRegistry;
+
+import java.util.concurrent.Callable;
 
 public class RandomValueGeneratorFactory extends AbstractValueGeneratorFactory {
 
@@ -15,24 +16,20 @@ public class RandomValueGeneratorFactory extends AbstractValueGeneratorFactory {
     }
 
     @Override
-    public <T> ValueGenerator<T> enumValueGenerator(Class<T> enumClass) {
+    public <T> Callable<T> enumValueGenerator(Class<T> enumClass) {
         return RandomValueGenerator.enumValueGenerator(enumClass);
     }
 
     @Override
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    protected ValueGenerator arrayValueGenerator(Class klass) {
-        final ValueGenerator valueGenerator = getValueGenerator(klass.getComponentType());
-        return new RandomValueGenerator() {
-
-            @Override
-            public Object[] generate() {
-                int size = 1 + RANDOM_UTILS.nextInt(10);
-                Object[] values = new Object[size];
-                for (int i = 0; i < size; i++)
-                    values[i] = valueGenerator.generate();
-                return values;
-            }
+    protected Callable arrayValueGenerator(Class klass) {
+        final Callable valueGenerator = getValueGenerator(klass.getComponentType());
+        return () -> {
+            int size = 1 + RandomValueGenerator.RANDOM_UTILS.nextInt(10);
+            Object[] values = new Object[size];
+            for (int i = 0; i < size; i++)
+                values[i] = valueGenerator.call();
+            return values;
         };
     }
 

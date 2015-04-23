@@ -7,7 +7,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.clemble.test.random.ObjectGenerator;
-import com.clemble.test.random.generator.SequentialValueGenerator;
 
 public class IndirrectSetTest {
 
@@ -43,11 +42,11 @@ public class IndirrectSetTest {
         Assert.assertTrue(generatedObject.getValue() != 0);
     }
 
-    @Test
-    public void testWithPredefinedSetter() {
-        ObjectGenerator.disableCaching();
-        ObjectGenerator.register(A.class, "data", SequentialValueGenerator.constantValueGenerator(10));
-        A generatedObject = ObjectGenerator.generate(A.class);
-        Assert.assertTrue(generatedObject.getValue() == 10);
-    }
+//    @Test
+//    public void testWithPredefinedSetter() {
+//        ObjectGenerator.disableCaching();
+//        ObjectGenerator.register(A.class, "data", SequentialValueGenerator.constantValueGenerator(10));
+//        A generatedObject = ObjectGenerator.generate(A.class);
+//        Assert.assertTrue(generatedObject.getValue() == 10);
+//    }
 }

@@ -3,8 +3,8 @@ package com.clemble.test.random.constructor;
 
 import java.lang.reflect.Modifier;
 import java.util.List;
+import java.util.concurrent.Callable;
 
-import com.clemble.test.random.ValueGenerator;
 import com.clemble.test.random.ValueGeneratorFactory;
 
 /**
@@ -24,9 +24,9 @@ abstract public class ClassConstructor<T> {
      */
     abstract public T construct();
     
-    abstract public List<ValueGenerator<?>> getValueGenerators();
+    abstract public List<Callable<?>> getValueGenerators();
     
-    abstract public ClassConstructor<T> clone(List<ValueGenerator<?>> generatorsToUse);
+    abstract public ClassConstructor<T> clone(List<Callable<?>> generatorsToUse);
 
     /**
      * Generates {@link ClassConstructor}. It firstly checks Constructor, than FactoryMethod and the last is Builder based construction.
