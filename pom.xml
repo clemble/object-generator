@@ -42,7 +42,6 @@
 
     <properties>
         <!-- Generic dependencies -->
-        <guava.version>18.0</guava.version>
         <reflections.version>0.9.8</reflections.version>
         <commons-lang.version>3.3.2</commons-lang.version>
         <commons-math.version>3.4.1</commons-math.version>
@@ -76,11 +75,6 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-math3</artifactId>
             <version>${commons-math.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>${guava.version}</version>
         </dependency>
         <dependency>
             <groupId>javax.validation</groupId>

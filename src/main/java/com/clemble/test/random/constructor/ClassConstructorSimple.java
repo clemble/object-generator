@@ -8,10 +8,9 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.stream.Collectors;
 
 import com.clemble.test.random.ValueGeneratorFactory;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableList;
 
 /**
@@ -74,8 +73,7 @@ public final class ClassConstructorSimple<T> extends ClassConstructor<T> {
             for (Callable<?> valueGenerator : getConstructorValueGenerators())
                 values.add(valueGenerator.call());
 			getConstructor().setAccessible(true);
-			generatedObject = values.size() == 0 ? getConstructor().newInstance() : getConstructor()
-					.newInstance(values.toArray());
+			generatedObject = values.size() == 0 ? getConstructor().newInstance() : getConstructor().newInstance(values.toArray());
 		} catch (Exception e) {
 			throw new RuntimeException("Failed to constuct using " + getConstructor(),e);
 		}
@@ -103,32 +101,32 @@ public final class ClassConstructorSimple<T> extends ClassConstructor<T> {
 	 * @return {@link ClassConstructor} if it is possible to generate one, <code>null</code> otherwise.
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T> ClassConstructorSimple<T> build(final ClassAccessWrapper<?> classToGenerate,
-			final ValueGeneratorFactory valueGeneratorFactory) {
-		Constructor<?>[] constructors = classToGenerate.getConstructors();
-		// Step 1. Selecting appropriate constructor
-		if (constructors.length == 0)
-			return null;
+    public static <T> ClassConstructorSimple<T> build(
+        final ClassAccessWrapper<?> classToGenerate,
+        final ValueGeneratorFactory valueGeneratorFactory) {
+        Constructor<?>[] constructors = classToGenerate.getConstructors();
+        // Step 1. Selecting appropriate constructor
+        if (constructors.length == 0)
+            return null;
         // Step 2. Searching for default Constructor or constructor with least configurations
-		// Step 2.1 Filtering classes with parameters that can be cast to constructed class
-		Collection<Constructor<?>> filteredConstructors = Collections2.filter(Arrays.asList(constructors),
-            new Predicate<Constructor<?>>() {
-                @Override
-                public boolean apply(final Constructor<?> input) {
+        // Step 2.1 Filtering classes with parameters that can be cast to constructed class
+        Collection<Constructor<?>> filteredConstructors = Arrays.
+            asList(constructors).
+            stream().
+            filter((input) -> {
                 for (Class<?> parameter : input.getParameterTypes())
                     if (classToGenerate.canBeReplacedWith(parameter) || classToGenerate.canReplace(parameter))
                         return false;
                 return true;
-            }
-        });
+            }).
+            collect(Collectors.toList());
         // Step 3. Selecting constructor that would best fit for processing
         ClassConstructorSimple<T> simpleConstructor = null;
         Constructor<?> bestCandidate = null;
         for (Constructor<?> candidate : filteredConstructors) {
             if (bestCandidate == null || candidate.getParameterTypes().length > bestCandidate.getParameterTypes().length) {
                 // Step 4.1 Choosing generators for Constructor variable
-                ClassConstructorSimple<T> candidateConstructor =  new ClassConstructorSimple<T>((Constructor<T>) candidate,
-                    valueGeneratorFactory.getValueGenerators(candidate.getParameterTypes()));
+                ClassConstructorSimple<T> candidateConstructor =  new ClassConstructorSimple<T>((Constructor<T>) candidate, valueGeneratorFactory.getValueGenerators(candidate.getParameterTypes()));
                 try {
                     candidateConstructor.construct();
                     simpleConstructor = candidateConstructor;
