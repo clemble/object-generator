@@ -1,7 +1,6 @@
 package com.clemble.test.random.constructor;
 
-
-import com.clemble.test.random.constructor.ClassPropertySetter;
+import java.util.concurrent.Callable;
 
 public class BeanValidationRegistry {
 
@@ -9,4 +8,7 @@ public class BeanValidationRegistry {
 		return null;
 	}
 
+    public <T> Callable<T> get(String field, Class<?> klass, Callable<T> original) {
+        return original;
+    }
 }

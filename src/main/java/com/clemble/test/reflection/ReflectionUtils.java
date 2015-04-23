@@ -1,8 +1,10 @@
 package com.clemble.test.reflection;
 
 import java.lang.annotation.Annotation;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import org.reflections.Reflections;
 
@@ -64,4 +66,28 @@ public class ReflectionUtils {
         Set<Class<? extends T>> subTypes = reflections.getSubTypesOf(klass);
         return subTypes;
     }
+
+    /**
+     * Searches for all possible annotations associated with the field.
+     *
+     * @param klass       source Class
+     * @param field       field name
+     * @return Stream of all annotations associated with the field.
+     */
+    public static Stream<Annotation> findAllAnnotations(String field, Class<?> klass) {
+        // Step 1. Checking methods
+        Stream<Annotation> methodAnnotations = Arrays.asList(klass.getDeclaredMethods()).
+            stream().
+            filter(m -> m.getName().toLowerCase().contains(field.toLowerCase())).
+            flatMap(m -> Arrays.asList(m.getDeclaredAnnotations()).stream());
+        // Step 2. Checking field
+        Stream<Annotation> fieldAnnotations = Arrays.asList(klass.getDeclaredFields()).
+            stream().
+            filter(f -> f.getName().toLowerCase().equals(field.toLowerCase())).
+            flatMap(f -> Arrays.asList(f.getDeclaredAnnotations()).stream());
+        // Step 3. Combining annotations
+        // Can't extract data from constructor parameter, since there is no information saved after compilation
+        return Stream.concat(fieldAnnotations, methodAnnotations);
+    }
+
 }

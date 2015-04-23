@@ -115,8 +115,9 @@ public final class ClassConstructorSimple<T> extends ClassConstructor<T> {
         Collection<Constructor<?>> filteredConstructors = Arrays.
             asList(constructors).
             stream().
-            filter((input) -> {
-                for (Class<?> parameter : input.getParameterTypes())
+            filter((constructor) -> {
+                for (Class<?> parameter : constructor.getParameterTypes())
+                    // Prevent circular references
                     if (classToGenerate.canBeReplacedWith(parameter) || classToGenerate.canReplace(parameter))
                         return false;
                 return true;
