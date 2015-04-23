@@ -22,7 +22,7 @@ public interface ValueGeneratorFactory {
      *            generated {@link Class}
      * @return {@link Callable} for procided {@link Class}
      */
-    public <T> Callable<T> getValueGenerator(Class<T> klass);
+    public <T> Callable<T> get(Class<T> klass);
 
     /**
      * Produces {@link Collection} of {@link Callable} for provided {@link Class}es.
@@ -31,7 +31,7 @@ public interface ValueGeneratorFactory {
      *            Collection of {@link Class}s to generate.
      * @return {@link Collection} of {@link Callable} to use.
      */
-    public Collection<Callable<?>> getValueGenerators(Class<?>[] parameters);
+    public Collection<Callable<?>> get(Class<?>[] parameters);
 
     public ClassPropertySetterRegistry getPropertySetterManager();
 

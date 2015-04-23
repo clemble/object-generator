@@ -49,7 +49,7 @@ public class ObjectGenerator {
     }
 
     public static <T> Callable<T> getValueGenerator(Class<T> classToGenerate) {
-        return valueGeneratorFactory.getValueGenerator(classToGenerate);
+        return valueGeneratorFactory.get(classToGenerate);
     }
 
     public static <T, V> void register(final Class<T> searchClass, final String name, final Callable<V> valueGenerator) {

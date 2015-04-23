@@ -112,7 +112,7 @@ final public class ClassConstructorFactory<T> extends ClassConstructor<T> {
         for (Method candidate : possibleBuilders) {
             try {
                 // Step 3.1. Checking that candidate can actually constuct the Object
-                ClassConstructorFactory<T> candidateFactory =  new ClassConstructorFactory<T>(candidate, valueGeneratorFactory.getValueGenerators(candidate.getParameterTypes()));
+                ClassConstructorFactory<T> candidateFactory =  new ClassConstructorFactory<T>(candidate, valueGeneratorFactory.get(candidate.getParameterTypes()));
                 candidateFactory.construct();
                 // Step 3.2. If involves more parameters use it
                 if (builder == null || candidate.getParameterTypes().length > builder.getParameterTypes().length) {

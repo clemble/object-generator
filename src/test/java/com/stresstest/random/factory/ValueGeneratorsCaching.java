@@ -32,27 +32,27 @@ public class ValueGeneratorsCaching {
 
     @Test
     public void testStandardGeneraterCreatedEachTime() {
-        Callable<BooleanRandomClass> valueGenerator = simpleValueGeneratorFactory.getValueGenerator(BooleanRandomClass.class);
-        Callable<BooleanRandomClass> anotherValueGenerator = simpleValueGeneratorFactory.getValueGenerator(BooleanRandomClass.class);
+        Callable<BooleanRandomClass> valueGenerator = simpleValueGeneratorFactory.get(BooleanRandomClass.class);
+        Callable<BooleanRandomClass> anotherValueGenerator = simpleValueGeneratorFactory.get(BooleanRandomClass.class);
         Assert.assertNotSame(valueGenerator, anotherValueGenerator);
     }
 
     @Test
     public void testCachedGeneraterCreatedEachTime() {
-        Callable<BooleanRandomClass> valueGenerator = cachedValueGeneratorFactory.getValueGenerator(BooleanRandomClass.class);
-        Callable<BooleanRandomClass> anotherValueGenerator = cachedValueGeneratorFactory.getValueGenerator(BooleanRandomClass.class);
+        Callable<BooleanRandomClass> valueGenerator = cachedValueGeneratorFactory.get(BooleanRandomClass.class);
+        Callable<BooleanRandomClass> anotherValueGenerator = cachedValueGeneratorFactory.get(BooleanRandomClass.class);
         Assert.assertEquals(valueGenerator, anotherValueGenerator);
     }
 
     @Test
     public void testCachedGeneraterReused() {
-        Callable<BooleanRandomClass> booleanValueGenerator = cachedValueGeneratorFactory.getValueGenerator(BooleanRandomClass.class);
-        Assert.assertEquals(booleanValueGenerator, cachedValueGeneratorFactory.getValueGenerator(BooleanRandomClass.class));
+        Callable<BooleanRandomClass> booleanValueGenerator = cachedValueGeneratorFactory.get(BooleanRandomClass.class);
+        Assert.assertEquals(booleanValueGenerator, cachedValueGeneratorFactory.get(BooleanRandomClass.class));
 
-        Callable<IntRandomClass> intValueGenerator = cachedValueGeneratorFactory.getValueGenerator(IntRandomClass.class);
-        Assert.assertEquals(intValueGenerator, cachedValueGeneratorFactory.getValueGenerator(IntRandomClass.class));
+        Callable<IntRandomClass> intValueGenerator = cachedValueGeneratorFactory.get(IntRandomClass.class);
+        Assert.assertEquals(intValueGenerator, cachedValueGeneratorFactory.get(IntRandomClass.class));
 
-        Callable<CombinedRandomClass> combinedValueGenerator = cachedValueGeneratorFactory.getValueGenerator(CombinedRandomClass.class);
-        Assert.assertEquals(combinedValueGenerator, cachedValueGeneratorFactory.getValueGenerator(CombinedRandomClass.class));
+        Callable<CombinedRandomClass> combinedValueGenerator = cachedValueGeneratorFactory.get(CombinedRandomClass.class);
+        Assert.assertEquals(combinedValueGenerator, cachedValueGeneratorFactory.get(CombinedRandomClass.class));
     }
 }

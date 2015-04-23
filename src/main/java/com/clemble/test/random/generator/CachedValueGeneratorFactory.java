@@ -25,7 +25,7 @@ public class CachedValueGeneratorFactory extends AbstractValueGeneratorFactory {
             new CacheLoader<Class<?>, Callable<?>>() {
                 @Override
                 public Callable<?> load(Class<?> klass) throws Exception {
-                    return valueGeneratorFactory.getValueGenerator(klass);
+                    return valueGeneratorFactory.get(klass);
                 }
             });
 
@@ -36,7 +36,7 @@ public class CachedValueGeneratorFactory extends AbstractValueGeneratorFactory {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T> Callable<T> getValueGenerator(Class<T> klass) {
+    public <T> Callable<T> get(Class<T> klass) {
         try {
             return (Callable<T>) cachedValueGenerators.get(klass);
         } catch (Exception e) {

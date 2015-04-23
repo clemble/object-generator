@@ -64,10 +64,6 @@ abstract public class AbstractValueGeneratorFactory implements ValueGeneratorFac
 
     final private ClassPropertySetterRegistry propertySetterManager;
 
-    public AbstractValueGeneratorFactory() {
-        this(new ClassPropertySetterRegistry());
-    }
-
     public AbstractValueGeneratorFactory(final ClassPropertySetterRegistry setterManager) {
         this(setterManager, null);
     }
@@ -97,7 +93,7 @@ abstract public class AbstractValueGeneratorFactory implements ValueGeneratorFac
     }
 
     @Override
-    final public Collection<Callable<?>> getValueGenerators(Class<?>[] parameters) {
+    final public Collection<Callable<?>> get(Class<?>[] parameters) {
         // Step 1. Sanity check
         if (parameters == null || parameters.length == 0)
             return Collections.emptyList();
@@ -105,7 +101,7 @@ abstract public class AbstractValueGeneratorFactory implements ValueGeneratorFac
         Collection<Callable<?>> resultGenerators = new ArrayList<Callable<?>>();
         for (Class<?> parameter : parameters) {
             if (parameter != null)
-                resultGenerators.add(getValueGenerator(parameter));
+                resultGenerators.add(get(parameter));
         }
         return resultGenerators;
     }
@@ -123,7 +119,7 @@ abstract public class AbstractValueGeneratorFactory implements ValueGeneratorFac
      * @return {@link Callable} for procided {@link Class}
      */
     @SuppressWarnings("unchecked")
-    public <T> Callable<T> getValueGenerator(Class<T> klass) {
+    public <T> Callable<T> get(Class<T> klass) {
         // Step 1. Checking that it can be replaced with standard constructors
         Callable<T> valueGenerator = (Callable<T>) DEFAULT_GENERATORS.get(klass);
         if (valueGenerator != null)

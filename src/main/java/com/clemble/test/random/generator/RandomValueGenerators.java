@@ -12,7 +12,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 
 import com.google.common.collect.ImmutableMap;
 
-public abstract class RandomValueGenerator {
+public abstract class RandomValueGenerators {
 
     /**
      * Generic source of randomness in all value generators (shared for performance reasons).
@@ -230,39 +230,39 @@ public abstract class RandomValueGenerator {
     final public static Map<Class<?>, Callable<?>> DEFAULT_GENERATORS;
     static {
         Map<Class<?>, Callable<?>> valueGenerators = new HashMap<Class<?>, Callable<?>>();
-        valueGenerators.put(String.class, RandomValueGenerator.STRING_VALUE_GENERATOR);
+        valueGenerators.put(String.class, RandomValueGenerators.STRING_VALUE_GENERATOR);
 
-        valueGenerators.put(Boolean.class, RandomValueGenerator.BOOLEAN_VALUE_GENERATOR);
-        valueGenerators.put(boolean.class, RandomValueGenerator.BOOLEAN_VALUE_GENERATOR);
-        valueGenerators.put(boolean[].class, RandomValueGenerator.BOOLEAN_ARRAY_VALUE_GENERATOR);
+        valueGenerators.put(Boolean.class, RandomValueGenerators.BOOLEAN_VALUE_GENERATOR);
+        valueGenerators.put(boolean.class, RandomValueGenerators.BOOLEAN_VALUE_GENERATOR);
+        valueGenerators.put(boolean[].class, RandomValueGenerators.BOOLEAN_ARRAY_VALUE_GENERATOR);
 
-        valueGenerators.put(Byte.class, RandomValueGenerator.BYTE_VALUE_GENERATOR);
-        valueGenerators.put(byte.class, RandomValueGenerator.BYTE_VALUE_GENERATOR);
-        valueGenerators.put(byte[].class, RandomValueGenerator.BYTE_ARRAY_VALUE_GENERATOR);
+        valueGenerators.put(Byte.class, RandomValueGenerators.BYTE_VALUE_GENERATOR);
+        valueGenerators.put(byte.class, RandomValueGenerators.BYTE_VALUE_GENERATOR);
+        valueGenerators.put(byte[].class, RandomValueGenerators.BYTE_ARRAY_VALUE_GENERATOR);
 
-        valueGenerators.put(Character.class, RandomValueGenerator.CHAR_VALUE_GENERATOR);
-        valueGenerators.put(char.class, RandomValueGenerator.CHAR_VALUE_GENERATOR);
-        valueGenerators.put(char[].class, RandomValueGenerator.CHAR_ARRAY_VALUE_GENERATOR);
+        valueGenerators.put(Character.class, RandomValueGenerators.CHAR_VALUE_GENERATOR);
+        valueGenerators.put(char.class, RandomValueGenerators.CHAR_VALUE_GENERATOR);
+        valueGenerators.put(char[].class, RandomValueGenerators.CHAR_ARRAY_VALUE_GENERATOR);
 
-        valueGenerators.put(Short.class, RandomValueGenerator.SHORT_VALUE_GENERATOR);
-        valueGenerators.put(short.class, RandomValueGenerator.SHORT_VALUE_GENERATOR);
-        valueGenerators.put(short[].class, RandomValueGenerator.SHORT_ARRAY_VALUE_GENERATOR);
+        valueGenerators.put(Short.class, RandomValueGenerators.SHORT_VALUE_GENERATOR);
+        valueGenerators.put(short.class, RandomValueGenerators.SHORT_VALUE_GENERATOR);
+        valueGenerators.put(short[].class, RandomValueGenerators.SHORT_ARRAY_VALUE_GENERATOR);
 
-        valueGenerators.put(Integer.class, RandomValueGenerator.INTEGER_VALUE_GENERATOR);
-        valueGenerators.put(int.class, RandomValueGenerator.INTEGER_VALUE_GENERATOR);
-        valueGenerators.put(int[].class, RandomValueGenerator.INTEGER_ARRAY_VALUE_GENERATOR);
+        valueGenerators.put(Integer.class, RandomValueGenerators.INTEGER_VALUE_GENERATOR);
+        valueGenerators.put(int.class, RandomValueGenerators.INTEGER_VALUE_GENERATOR);
+        valueGenerators.put(int[].class, RandomValueGenerators.INTEGER_ARRAY_VALUE_GENERATOR);
 
-        valueGenerators.put(Long.class, RandomValueGenerator.LONG_VALUE_GENERATOR);
-        valueGenerators.put(long.class, RandomValueGenerator.LONG_VALUE_GENERATOR);
-        valueGenerators.put(long[].class, RandomValueGenerator.LONG_ARRAY_VALUE_GENERATOR);
+        valueGenerators.put(Long.class, RandomValueGenerators.LONG_VALUE_GENERATOR);
+        valueGenerators.put(long.class, RandomValueGenerators.LONG_VALUE_GENERATOR);
+        valueGenerators.put(long[].class, RandomValueGenerators.LONG_ARRAY_VALUE_GENERATOR);
 
-        valueGenerators.put(Float.class, RandomValueGenerator.FLOAT_VALUE_GENERATOR);
-        valueGenerators.put(float.class, RandomValueGenerator.FLOAT_VALUE_GENERATOR);
-        valueGenerators.put(float[].class, RandomValueGenerator.FLOAT_ARRAY_VALUE_GENERATOR);
+        valueGenerators.put(Float.class, RandomValueGenerators.FLOAT_VALUE_GENERATOR);
+        valueGenerators.put(float.class, RandomValueGenerators.FLOAT_VALUE_GENERATOR);
+        valueGenerators.put(float[].class, RandomValueGenerators.FLOAT_ARRAY_VALUE_GENERATOR);
 
-        valueGenerators.put(Double.class, RandomValueGenerator.DOUBLE_VALUE_GENERATOR);
-        valueGenerators.put(double.class, RandomValueGenerator.DOUBLE_VALUE_GENERATOR);
-        valueGenerators.put(double[].class, RandomValueGenerator.DOUBLE_ARRAY_VALUE_GENERATOR);
+        valueGenerators.put(Double.class, RandomValueGenerators.DOUBLE_VALUE_GENERATOR);
+        valueGenerators.put(double.class, RandomValueGenerators.DOUBLE_VALUE_GENERATOR);
+        valueGenerators.put(double[].class, RandomValueGenerators.DOUBLE_ARRAY_VALUE_GENERATOR);
 
         DEFAULT_GENERATORS = ImmutableMap.<Class<?>, Callable<?>> copyOf(valueGenerators);
     }

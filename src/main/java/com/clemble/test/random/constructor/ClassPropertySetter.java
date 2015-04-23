@@ -11,11 +11,11 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.TreeSet;
 import java.util.concurrent.Callable;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import com.clemble.test.random.ObjectGenerator;
 import com.clemble.test.random.ValueGeneratorFactory;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
 
 /**
  * Abstraction of object property.
@@ -49,14 +49,11 @@ abstract public class ClassPropertySetter<T> {
     /**
      * Filter for applicable methods, uses only set and add methods
      */
-    final private static Predicate<Member> FILTER_APPLICABLE_METHODS = new Predicate<Member>() {
-        @Override
-        public boolean apply(Member input) {
-            if ((input.getModifiers() & Modifier.STATIC) != 0)
-                return false;
-            String name = input.getName().toLowerCase();
-            return name.startsWith("set") || name.startsWith("add");
-        }
+    final private static Predicate<Member> FILTER_APPLICABLE_METHODS = (input) -> {
+        if ((input.getModifiers() & Modifier.STATIC) != 0)
+            return false;
+        String name = input.getName().toLowerCase();
+        return name.startsWith("set") || name.startsWith("add");
     };
 
     /**
@@ -145,12 +142,11 @@ abstract public class ClassPropertySetter<T> {
      */
     public static Field findField(final ClassAccessWrapper<?> searchClass, final String fieldName) {
         // Step 1. Filter all field's with specified name
-        Collection<Field> fieldCandidates = Collections2.filter(searchClass.getFields(), new Predicate<Field>() {
-            @Override
-            public boolean apply(Field field) {
-                return fieldName.equals(extractFieldName(field));
-            }
-        });
+        Collection<Field> fieldCandidates = searchClass.
+                getFields().
+                stream().
+                filter((field) -> fieldName.equals(extractFieldName(field))).
+                collect(Collectors.toList());
         // Step 2. Return first field in sorted Collection.
         return fieldCandidates.isEmpty() ? null : fieldCandidates.iterator().next();
     }
@@ -166,13 +162,15 @@ abstract public class ClassPropertySetter<T> {
      */
     public static Method findSetMethod(final ClassAccessWrapper<?> searchClass, final String methodName) {
         // Step 1. Filter method candidates
-        Collection<Method> methodCandidates = Collections2.filter(searchClass.getMethods(), new Predicate<Method>() {
-            @Override
-            public boolean apply(Method method) {
-                return method.getParameterTypes().length == 1 && method.getName().toLowerCase().startsWith("set")
-                        && extractMemberName(method).equals(methodName);
-            }
-        });
+        Collection<Method> methodCandidates = searchClass.
+                getMethods().
+                stream().
+                filter((method) ->
+                    method.getParameterTypes().length == 1 &&
+                    method.getName().toLowerCase().startsWith("set") &&
+                    extractMemberName(method).equals(methodName)
+                ).
+                collect(Collectors.toList());
         // Step 2. Return first method in the Collection
         return methodCandidates.isEmpty() ? null : methodCandidates.iterator().next();
     }
@@ -188,14 +186,14 @@ abstract public class ClassPropertySetter<T> {
      */
     public static Method findAddMethod(final ClassAccessWrapper<?> searchClass, final String methodName) {
         // Step 1. Filter method candidates
-        Collection<Method> methodCandidates = Collections2.filter(searchClass.getMethods(), new Predicate<Method>() {
-            @Override
-            public boolean apply(Method method) {
+        Collection<Method> methodCandidates = searchClass.
+            getMethods().stream().filter((method) -> {
                 String possibleFieldName = extractMemberName(method);
-                return method.getParameterTypes().length == 1 && method.getName().toLowerCase().startsWith("add")
-                        && (methodName.startsWith(possibleFieldName) || possibleFieldName.startsWith(methodName));
-            }
-        });
+                return method.getParameterTypes().length == 1 &&
+                        method.getName().toLowerCase().startsWith("add") &&
+                        (methodName.startsWith(possibleFieldName) || possibleFieldName.startsWith(methodName));
+            }).
+            collect(Collectors.toList());
         // Step 2. Return first field
         return methodCandidates.isEmpty() ? null : methodCandidates.iterator().next();
     }
@@ -291,14 +289,19 @@ abstract public class ClassPropertySetter<T> {
                 propertySetters.add(createFieldSetter(searchClass, field));
         }
         // Step 2. Create Collection of method setters
-        for (Method method : Collections2.filter(searchClass.getMethods(), FILTER_APPLICABLE_METHODS)) {
-            if (method.getParameterTypes().length != 1 || method.getParameterTypes()[0] == Object.class || searchClass.getSourceClass().equals(method.getParameterTypes()[0]))
-                continue;
-            ClassPropertySetter<?> propertySetter = createMethodSetter(searchClass, method);
-            if (propertySetter != null) {
-                propertySetters.add(propertySetter);
-            }
-        }
+        searchClass.getMethods().stream().
+            filter(FILTER_APPLICABLE_METHODS).
+            forEach((method) -> {
+                if (method.getParameterTypes().length != 1 ||
+                    method.getParameterTypes()[0] == Object.class ||
+                    searchClass.getSourceClass().equals(method.getParameterTypes()[0])) {
+                } else {
+                    ClassPropertySetter<?> propertySetter = createMethodSetter(searchClass, method);
+                    if (propertySetter != null) {
+                        propertySetters.add(propertySetter);
+                    }
+                }
+            });
 
         final List<ClassPropertySetter<?>> resultSetters = new ArrayList<ClassPropertySetter<?>>(propertySetters);
         Collections.sort(resultSetters, COMPARE_PRESENTATION_TYPE);

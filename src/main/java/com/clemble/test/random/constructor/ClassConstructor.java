@@ -39,7 +39,9 @@ abstract public class ClassConstructor<T> {
      * @return {@link ClassConstructor} if it is possible to generate one, <code>null</code> otherwise.
      */
 	@SuppressWarnings({"unchecked"})
-    public static <T> ClassConstructor<T> construct(final ClassAccessWrapper<?> classToGenerate, final ValueGeneratorFactory valueGeneratorFactory) {
+    public static <T> ClassConstructor<T> construct(
+        final ClassAccessWrapper<?> classToGenerate,
+        final ValueGeneratorFactory valueGeneratorFactory) {
         ClassConstructor<T> objectConstructor = null;
         if ((objectConstructor = ClassConstructorFactory.build(classToGenerate, valueGeneratorFactory)) != null && canConstruct(objectConstructor))
             return objectConstructor;

@@ -10,7 +10,7 @@ import com.clemble.test.random.ObjectGenerator;
 import com.clemble.test.random.constructor.ClassConstructorSimple;
 import com.clemble.test.random.constructor.ClassPropertySetter;
 import com.clemble.test.random.constructor.ClassValueGenerator;
-import com.clemble.test.random.generator.RandomValueGenerator;
+import com.clemble.test.random.generator.RandomValueGenerators;
 
 @SuppressWarnings("all")
 public class PropertySetterTest {
@@ -26,9 +26,9 @@ public class PropertySetterTest {
 
     @Test
     public void testRandomGeneration() {
-    	ObjectGenerator.register(A.class, "intValue", RandomValueGenerator.INTEGER_VALUE_GENERATOR);
-    	ObjectGenerator.register(C.class, "intValue", RandomValueGenerator.INTEGER_VALUE_GENERATOR);
-    	ObjectGenerator.register(D.class, "intValue", RandomValueGenerator.INTEGER_VALUE_GENERATOR);
+    	ObjectGenerator.register(A.class, "intValue", RandomValueGenerators.INTEGER_VALUE_GENERATOR);
+    	ObjectGenerator.register(C.class, "intValue", RandomValueGenerators.INTEGER_VALUE_GENERATOR);
+    	ObjectGenerator.register(D.class, "intValue", RandomValueGenerators.INTEGER_VALUE_GENERATOR);
 
         D randomValue = ObjectGenerator.generate(D.class);
         Assert.assertNotSame(randomValue.getIntValue(), ((C) randomValue).getIntValue());

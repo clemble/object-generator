@@ -66,16 +66,18 @@ public final class ClassConstructorSimple<T> extends ClassConstructor<T> {
 	@SuppressWarnings({"rawtypes", "unchecked"})
 	public T construct() {
 		Object generatedObject = null;
-		// Step 2. Invoke constructor, creating empty Object
 		try {
             // Step 1. Generate value for Constructor
             Collection values = new ArrayList();
             for (Callable<?> valueGenerator : getConstructorValueGenerators())
                 values.add(valueGenerator.call());
-			getConstructor().setAccessible(true);
+            // Step 1.1 Make constructor accessible if needed
+            if (!constructor.isAccessible())
+			    constructor.setAccessible(true);
+            // Step 2. Invoke constructor, creating empty Object
 			generatedObject = values.size() == 0 ? getConstructor().newInstance() : getConstructor().newInstance(values.toArray());
 		} catch (Exception e) {
-			throw new RuntimeException("Failed to constuct using " + getConstructor(),e);
+			throw new RuntimeException("Failed to construct using " + getConstructor(),e);
 		}
 		return (T) generatedObject;
 	}
@@ -126,7 +128,7 @@ public final class ClassConstructorSimple<T> extends ClassConstructor<T> {
         for (Constructor<?> candidate : filteredConstructors) {
             if (bestCandidate == null || candidate.getParameterTypes().length > bestCandidate.getParameterTypes().length) {
                 // Step 4.1 Choosing generators for Constructor variable
-                ClassConstructorSimple<T> candidateConstructor =  new ClassConstructorSimple<T>((Constructor<T>) candidate, valueGeneratorFactory.getValueGenerators(candidate.getParameterTypes()));
+                ClassConstructorSimple<T> candidateConstructor =  new ClassConstructorSimple<T>((Constructor<T>) candidate, valueGeneratorFactory.get(candidate.getParameterTypes()));
                 try {
                     candidateConstructor.construct();
                     simpleConstructor = candidateConstructor;

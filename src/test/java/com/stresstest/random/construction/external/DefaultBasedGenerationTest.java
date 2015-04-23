@@ -42,7 +42,7 @@ public class DefaultBasedGenerationTest {
 
     @Test
     public void testDefaultFactoryConstructorUsed() {
-        Callable<DefaultBuilderBasedClass> factoryGenerator = valueGeneratorFactory.getValueGenerator(DefaultBuilderBasedClass.class);
+        Callable<DefaultBuilderBasedClass> factoryGenerator = valueGeneratorFactory.get(DefaultBuilderBasedClass.class);
         ClassValueGenerator<DefaultBuilderBasedClass> classValueGenerator = (ClassValueGenerator<DefaultBuilderBasedClass>) factoryGenerator;
         Assert.assertTrue(classValueGenerator.getObjectConstructor() instanceof ClassConstructorBuilder);
     }

@@ -43,23 +43,6 @@ public class ClassValueGenerator<T> implements Callable<T> {
         // Step 3. Generated Object can be used
         return (T) generatedObject;
     }
-    
-//    @Override
-//    public int scope(){
-//    	int totalSize = 1;
-//    	// Step 1. Calculating scope of constructor
-//    	List<ValueGenerator<?>> constuctorGenerators = objectConstructor.getValueGenerators();
-//    	for(ValueGenerator<?> generator: constuctorGenerators) {
-//    		totalSize = totalSize * Math.max(1, generator.scope());
-//    	}
-//    	// Step 2. Calculating scope of properties
-//    	constuctorGenerators = propertySetter != null ? propertySetter.getValueGenerators() : Collections.<ValueGenerator<?>>emptyList();
-//    	for(ValueGenerator<?> generator: constuctorGenerators) {
-//    		totalSize = totalSize * Math.max(1, generator.scope());
-//    	}
-//    	// Step 3. Returning final result
-//    	return totalSize;
-//    }
 
     /**
      * Returns associated {@link ClassConstructor}.

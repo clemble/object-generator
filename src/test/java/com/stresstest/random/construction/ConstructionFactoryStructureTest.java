@@ -51,7 +51,7 @@ public class ConstructionFactoryStructureTest {
 
     @Test
     public void testPrivateFactoryConstructorUsed() {
-        Callable<PrivateFactoryMethodClass> factoryGenerator = valueGeneratorFactory.getValueGenerator(PrivateFactoryMethodClass.class);
+        Callable<PrivateFactoryMethodClass> factoryGenerator = valueGeneratorFactory.get(PrivateFactoryMethodClass.class);
         ClassValueGenerator<PrivateFactoryMethodClass> classValueGenerator = (ClassValueGenerator<PrivateFactoryMethodClass>) factoryGenerator;
         Assert.assertTrue(classValueGenerator.getObjectConstructor() instanceof ClassConstructorFactory);
     }
@@ -90,7 +90,7 @@ public class ConstructionFactoryStructureTest {
 
     @Test
     public void testProtectedFactoryConstructorUsed() {
-        Callable<ProtectedFactoryMethodClass> factoryGenerator = valueGeneratorFactory.getValueGenerator(ProtectedFactoryMethodClass.class);
+        Callable<ProtectedFactoryMethodClass> factoryGenerator = valueGeneratorFactory.get(ProtectedFactoryMethodClass.class);
         ClassValueGenerator<ProtectedFactoryMethodClass> classValueGenerator = (ClassValueGenerator<ProtectedFactoryMethodClass>) factoryGenerator;
         Assert.assertTrue(classValueGenerator.getObjectConstructor() instanceof ClassConstructorFactory);
     }
@@ -129,7 +129,7 @@ public class ConstructionFactoryStructureTest {
 
     @Test
     public void testDefaultFactoryConstructorUsed() {
-        Callable<DefaultFactoryMethodClass> factoryGenerator = valueGeneratorFactory.getValueGenerator(DefaultFactoryMethodClass.class);
+        Callable<DefaultFactoryMethodClass> factoryGenerator = valueGeneratorFactory.get(DefaultFactoryMethodClass.class);
         ClassValueGenerator<DefaultFactoryMethodClass> classValueGenerator = (ClassValueGenerator<DefaultFactoryMethodClass>) factoryGenerator;
         Assert.assertTrue(classValueGenerator.getObjectConstructor() instanceof ClassConstructorFactory);
     }
@@ -168,7 +168,7 @@ public class ConstructionFactoryStructureTest {
 
     @Test
     public void testPublicFactoryConstructorUsed() {
-        Callable<PublicFactoryMethodClass> factoryGenerator = valueGeneratorFactory.getValueGenerator(PublicFactoryMethodClass.class);
+        Callable<PublicFactoryMethodClass> factoryGenerator = valueGeneratorFactory.get(PublicFactoryMethodClass.class);
         ClassValueGenerator<PublicFactoryMethodClass> classValueGenerator = (ClassValueGenerator<PublicFactoryMethodClass>) factoryGenerator;
         Assert.assertTrue(classValueGenerator.getObjectConstructor() instanceof ClassConstructorFactory);
     }
@@ -194,7 +194,7 @@ public class ConstructionFactoryStructureTest {
 
     @Test
     public void testMostParametersUsed() throws Exception {
-        Callable<TwoParametersClass> factoryGenerator = valueGeneratorFactory.getValueGenerator(TwoParametersClass.class);
+        Callable<TwoParametersClass> factoryGenerator = valueGeneratorFactory.get(TwoParametersClass.class);
         ClassValueGenerator<TwoParametersClass> classValueGenerator = (ClassValueGenerator<TwoParametersClass>) factoryGenerator;
         Assert.assertTrue(classValueGenerator.getObjectConstructor() instanceof ClassConstructorSimple);
         Assert.assertNotNull(factoryGenerator.call());

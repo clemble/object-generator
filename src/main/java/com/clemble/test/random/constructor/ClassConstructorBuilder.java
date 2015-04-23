@@ -115,7 +115,7 @@ public class ClassConstructorBuilder<T> extends ClassConstructor<T> {
         for (Method candidate : possibleBuilders) {
             if (constructorBuilder == null || candidate.getParameterTypes().length > builder.getParameterTypes().length) {
                 // Step 4. Selecting most factory method based
-                ClassConstructorFactory<T> builderMethod = new ClassConstructorFactory<T>(candidate, valueGeneratorFactory.getValueGenerators(candidate.getParameterTypes()));
+                ClassConstructorFactory<T> builderMethod = new ClassConstructorFactory<T>(candidate, valueGeneratorFactory.get(candidate.getParameterTypes()));
                 ClassPropertySetter<T> builderPropertySetter = ((ClassPropertySetter<T>) ClassPropertySetter.constructPropertySetter(classToGenerate.wrap(candidate.getReturnType()), valueGeneratorFactory));
 
                 Method valueBuilderMethod = null;
