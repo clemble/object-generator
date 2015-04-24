@@ -3,7 +3,7 @@ package com.stresstest.random.factory;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.junit.Test;
 

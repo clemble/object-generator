@@ -5,9 +5,11 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import com.clemble.test.random.ValueGeneratorFactory;
 import com.google.common.base.Predicate;
@@ -111,8 +113,12 @@ final public class ClassConstructorFactory<T> extends ClassConstructor<T> {
         ClassConstructorFactory<T> constructorFactory = null;
         for (Method candidate : possibleBuilders) {
             try {
-                // Step 3.1. Checking that candidate can actually constuct the Object
-                ClassConstructorFactory<T> candidateFactory =  new ClassConstructorFactory<T>(candidate, valueGeneratorFactory.get(candidate.getParameterTypes()));
+                // Step 3.1. Checking that candidate can actually construct the Object
+                List<Supplier<?>> suppliers = Arrays.asList(candidate.getParameters()).
+                    stream().
+                    map(valueGeneratorFactory::getByParameter).
+                    collect(Collectors.toList());
+                ClassConstructorFactory<T> candidateFactory =  new ClassConstructorFactory<T>(candidate, suppliers);
                 candidateFactory.construct();
                 // Step 3.2. If involves more parameters use it
                 if (builder == null || candidate.getParameterTypes().length > builder.getParameterTypes().length) {

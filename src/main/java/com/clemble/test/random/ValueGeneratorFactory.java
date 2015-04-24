@@ -1,5 +1,8 @@
 package com.clemble.test.random;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.util.Collection;
 import java.util.concurrent.Callable;
 import java.util.function.Supplier;
@@ -33,6 +36,8 @@ public interface ValueGeneratorFactory {
      * @return {@link Collection} of {@link Callable} to use.
      */
     public Collection<Supplier<?>> get(Class<?>[] parameters);
+
+    public Supplier<?> getByParameter(Parameter parameter);
 
     public ClassPropertySetterRegistry getPropertySetterManager();
 

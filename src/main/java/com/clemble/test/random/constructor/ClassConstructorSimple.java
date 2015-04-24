@@ -128,9 +128,13 @@ public final class ClassConstructorSimple<T> extends ClassConstructor<T> {
         Constructor<?> bestCandidate = null;
         for (Constructor<?> candidate : filteredConstructors) {
             if (bestCandidate == null || candidate.getParameterTypes().length > bestCandidate.getParameterTypes().length) {
-                // Step 4.1 Choosing generators for Constructor variable
-                ClassConstructorSimple<T> candidateConstructor =  new ClassConstructorSimple<T>((Constructor<T>) candidate, valueGeneratorFactory.get(candidate.getParameterTypes()));
                 try {
+                    // Step 4.1 Choosing generators for Constructor variable
+                    Collection<Supplier<?>> suppliers = Arrays.asList(candidate.getParameters()).
+                        stream().
+                        map(valueGeneratorFactory::getByParameter).
+                        collect(Collectors.toList());
+                    ClassConstructorSimple<T> candidateConstructor =  new ClassConstructorSimple<T>((Constructor<T>) candidate, suppliers);
                     candidateConstructor.construct();
                     simpleConstructor = candidateConstructor;
                     bestCandidate = candidate;

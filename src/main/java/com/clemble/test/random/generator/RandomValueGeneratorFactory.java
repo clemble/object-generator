@@ -3,6 +3,7 @@ package com.clemble.test.random.generator;
 import com.clemble.test.random.AbstractValueGeneratorFactory;
 import com.clemble.test.random.constructor.ClassPropertySetterRegistry;
 
+import java.lang.reflect.Parameter;
 import java.util.function.Supplier;
 
 public class RandomValueGeneratorFactory extends AbstractValueGeneratorFactory {

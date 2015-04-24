@@ -4,9 +4,11 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import com.clemble.test.random.ValueGeneratorFactory;
 import com.google.common.base.Predicate;
@@ -115,7 +117,11 @@ public class ClassConstructorBuilder<T> extends ClassConstructor<T> {
         for (Method candidate : possibleBuilders) {
             if (constructorBuilder == null || candidate.getParameterTypes().length > builder.getParameterTypes().length) {
                 // Step 4. Selecting most factory method based
-                ClassConstructorFactory<T> builderMethod = new ClassConstructorFactory<T>(candidate, valueGeneratorFactory.get(candidate.getParameterTypes()));
+                Collection<Supplier<?>> suppliers = Arrays.asList(candidate.getParameters()).
+                    stream().
+                    map(valueGeneratorFactory::getByParameter).
+                    collect(Collectors.toList());
+                ClassConstructorFactory<T> builderMethod = new ClassConstructorFactory<T>(candidate, suppliers);
                 ClassPropertySetter<T> builderPropertySetter = ((ClassPropertySetter<T>) ClassPropertySetter.constructPropertySetter(classToGenerate.wrap(candidate.getReturnType()), valueGeneratorFactory));
 
                 Method valueBuilderMethod = null;

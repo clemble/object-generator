@@ -1,5 +1,6 @@
 package com.clemble.test.random;
 
+import java.lang.reflect.Parameter;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -202,5 +203,10 @@ abstract public class AbstractValueGeneratorFactory implements ValueGeneratorFac
     protected abstract <T> Supplier<T> enumValueGenerator(Class<T> klass);
 
     protected abstract <T> Supplier<T> arrayValueGenerator(Class<?> klass);
+
+    @Override
+    public Supplier<?> getByParameter(Parameter parameter) {
+        return get(parameter.getType());
+    }
 
 }
