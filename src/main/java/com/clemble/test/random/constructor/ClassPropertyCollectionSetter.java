@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.function.Supplier;
 
 import com.clemble.test.random.ObjectGenerator;
+import com.clemble.test.reflection.ReflectionUtils;
 
 /**
  * Property Setter for Collection fields.
@@ -48,8 +49,8 @@ final class ClassPropertyCollectionSetter<T> extends ClassPropertySetter<T> {
      */
     @SuppressWarnings("unchecked")
     ClassPropertyCollectionSetter(final ClassAccessWrapper<?> sourceClass, final Field field) {
-        Method addMethod = findAddMethod(sourceClass, ClassPropertySetter.extractFieldName(field));
-        Method setMethod = findSetMethod(sourceClass, ClassPropertySetter.extractFieldName(field));
+        Method addMethod = ReflectionUtils.findAddMethod(sourceClass, field);
+        Method setMethod = ReflectionUtils.findSetMethod(sourceClass, field);
 
         this.initialPropertySetter = new ClassPropertySimpleSetter<T>(field, setMethod, (Supplier<T>) ObjectGenerator.getValueGenerator(field.getType()));
 
@@ -64,7 +65,7 @@ final class ClassPropertyCollectionSetter<T> extends ClassPropertySetter<T> {
 
     @SuppressWarnings("unchecked")
     ClassPropertyCollectionSetter(final ClassAccessWrapper<?> sourceClass, final Method setMethod) {
-        Method addMethod = findAddMethod(sourceClass, setMethod.getName().substring(3));
+        Method addMethod = ReflectionUtils.findAddMethod(sourceClass, setMethod.getName().substring(3));
 
         this.initialPropertySetter = new ClassPropertySimpleSetter<T>(null, setMethod, (Supplier<T>) ObjectGenerator.getValueGenerator(setMethod.getParameterTypes()[0]));
 

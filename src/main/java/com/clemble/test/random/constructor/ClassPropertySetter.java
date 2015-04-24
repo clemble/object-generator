@@ -12,10 +12,10 @@ import java.util.List;
 import java.util.TreeSet;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 import com.clemble.test.random.ObjectGenerator;
 import com.clemble.test.random.ValueGeneratorFactory;
+import com.clemble.test.reflection.ReflectionUtils;
 
 /**
  * Abstraction of object property.
@@ -111,94 +111,6 @@ abstract public class ClassPropertySetter<T> {
     };
 
     /**
-     * Extracts and normalizes Member name.
-     *
-     * @param member member, which parameters to extract
-     * @return member name
-     */
-    public static String extractMemberName(Member member) {
-        String fieldName = extractFieldName(member);
-        return (fieldName.startsWith("set") || fieldName.startsWith("add") || fieldName.startsWith("get")) ? fieldName.substring(3) : fieldName;
-    }
-
-    /**
-     * Extracts and normalizes field name.
-     *
-     * @param member member, which name to extract
-     * @return field name
-     */
-    public static String extractFieldName(Member member) {
-        return member != null ? member.getName().toLowerCase() : "";
-    }
-
-    /**
-     * Finds field for specified field name.
-     * 
-     * @param searchClass
-     *            class to search in.
-     * @param fieldName
-     *            name of the field.
-     * @return Field or null if not found.
-     */
-    public static Field findField(final ClassAccessWrapper<?> searchClass, final String fieldName) {
-        // Step 1. Filter all field's with specified name
-        Collection<Field> fieldCandidates = searchClass.
-                getFields().
-                stream().
-                filter((field) -> fieldName.equals(extractFieldName(field))).
-                collect(Collectors.toList());
-        // Step 2. Return first field in sorted Collection.
-        return fieldCandidates.isEmpty() ? null : fieldCandidates.iterator().next();
-    }
-
-    /**
-     * Finds possible method for specified field name.
-     * 
-     * @param searchClass
-     *            class to search in.
-     * @param methodName
-     *            name of the Method
-     * @return possible set method for specified field name.
-     */
-    public static Method findSetMethod(final ClassAccessWrapper<?> searchClass, final String methodName) {
-        // Step 1. Filter method candidates
-        Collection<Method> methodCandidates = searchClass.
-                getMethods().
-                stream().
-                filter((method) ->
-                    method.getParameterTypes().length == 1 &&
-                    method.getName().toLowerCase().startsWith("set") &&
-                    extractMemberName(method).equals(methodName)
-                ).
-                collect(Collectors.toList());
-        // Step 2. Return first method in the Collection
-        return methodCandidates.isEmpty() ? null : methodCandidates.iterator().next();
-    }
-
-    /**
-     * Finds possible add method for specified field name.
-     * 
-     * @param searchClass
-     *            Class to search for.
-     * @param methodName
-     *            name of the method.
-     * @return possible add method for specified field name.
-     */
-    public static Method findAddMethod(final ClassAccessWrapper<?> searchClass, final String methodName) {
-        // Step 1. Filter method candidates
-        Collection<Method> methodCandidates = searchClass.
-            getMethods().stream().filter((method) -> {
-                String possibleFieldName = extractMemberName(method);
-                return method.getParameterTypes().length == 1 &&
-                        method.getName().toLowerCase().startsWith("add") &&
-                        (methodName.startsWith(possibleFieldName) || possibleFieldName.startsWith(methodName));
-            }).
-            collect(Collectors.toList());
-        // Step 2. Return first field
-        return methodCandidates.isEmpty() ? null : methodCandidates.iterator().next();
-    }
-
-    /**
      * Builds property setter for the specified field.
      * 
      * @param field
@@ -212,7 +124,7 @@ abstract public class ClassPropertySetter<T> {
         if (field == null)
             throw new IllegalArgumentException();
         // Step 2. Retrieve possible set name for the field
-        Method possibleMethods = findSetMethod(sourceClass, extractFieldName(field));
+        Method possibleMethods = ReflectionUtils.findSetMethod(sourceClass, field);
         // Step 3. Create possible field setter.
         return create(sourceClass, field, possibleMethods);
     }
@@ -231,7 +143,7 @@ abstract public class ClassPropertySetter<T> {
             throw new IllegalArgumentException();
         if (method.getParameterTypes().length != 1)
             return null;
-        Field possibleField = findField(sourceClass, extractMemberName(method));
+        Field possibleField = ReflectionUtils.findField(sourceClass, method);
         return create(sourceClass, possibleField, method);
     }
 

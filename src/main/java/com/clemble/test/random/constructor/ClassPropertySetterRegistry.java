@@ -15,6 +15,7 @@ import java.util.TreeSet;
 import java.util.concurrent.Callable;
 import java.util.function.Supplier;
 
+import com.clemble.test.reflection.ReflectionUtils;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 
@@ -97,8 +98,8 @@ final public class ClassPropertySetterRegistry {
     private <T> ClassPropertySetter<T> constructSetter(final Class<?> searchClass, final String name, final Supplier<T> valueGenerator) {
         final String possibleName = name.toLowerCase();
         final ClassAccessWrapper<?> wrapper = ClassAccessWrapper.createAllMethodsAccessor(searchClass);
-        final Field possibleField = ClassPropertySetter.findField(wrapper, possibleName);
-        final Method possibleMethod = ClassPropertySetter.findSetMethod(wrapper, possibleName);
+        final Field possibleField = ReflectionUtils.findField(wrapper, possibleName);
+        final Method possibleMethod = ReflectionUtils.findSetMethod(wrapper, possibleName);
 
         ClassPropertySetter<T> propertySetter = ClassPropertySetter.create(wrapper, possibleField, possibleMethod, valueGenerator);
 

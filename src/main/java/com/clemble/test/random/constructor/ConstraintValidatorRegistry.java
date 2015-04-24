@@ -1,6 +1,8 @@
 package com.clemble.test.random.constructor;
 
 import com.clemble.test.random.constructor.validation.ConstraintValidator;
+import com.clemble.test.random.constructor.validation.SizeConstraintValidator;
+import com.google.common.collect.ImmutableList;
 
 import java.lang.annotation.Annotation;
 import java.util.*;
@@ -10,7 +12,8 @@ import java.util.stream.Stream;
 
 public class ConstraintValidatorRegistry {
 
-    final private List<ConstraintValidator> validators = new ArrayList<>();
+    final private List<ConstraintValidator> validators = ImmutableList.
+        of(new SizeConstraintValidator());
 
     public <T> Supplier<T> get(Stream<Annotation> annotation, Supplier<T> generator) {
         Collection<Annotation> allAnnotations = annotation.collect(Collectors.toList());
