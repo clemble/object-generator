@@ -10,8 +10,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.TreeSet;
-import java.util.concurrent.Callable;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import com.clemble.test.random.ObjectGenerator;
@@ -35,9 +35,9 @@ abstract public class ClassPropertySetter<T> {
      */
     abstract public void setProperties(Object target);
 
-    abstract public List<Callable<?>> getValueGenerators();
+    abstract public List<Supplier<?>> getValueGenerators();
 
-    abstract public ClassPropertySetter<T> clone(List<Callable<?>> generatorsToUse);
+    abstract public ClassPropertySetter<T> clone(List<Supplier<?>> generatorsToUse);
 
     /**
      * Returns affected Class. Supposed to be used primerely inside invocation.
@@ -236,7 +236,7 @@ abstract public class ClassPropertySetter<T> {
     }
 
     /**
-     * Generates PropertySetter for provided Field, Method and {@link Callable}.
+     * Generates PropertySetter for provided Field, Method and {@link Supplier}.
      * 
      * @param field
      *            target field.
@@ -251,8 +251,7 @@ abstract public class ClassPropertySetter<T> {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> ClassPropertySetter<T> create(final ClassAccessWrapper<?> sourceClass, final Field field, final Method method,
-            Callable<T> valueGenerator) {
+    public static <T> ClassPropertySetter<T> create(final ClassAccessWrapper<?> sourceClass, final Field field, final Method method, Supplier<T> valueGenerator) {
         if(field == null && method == null)
             return null;
 
@@ -279,8 +278,7 @@ abstract public class ClassPropertySetter<T> {
      *            {@link ClassAccessWrapper} access wrapper to generate properties for.
      * @return list of all PropertySetter it can set, ussing specified field.
      */
-    public static <T> Collection<ClassPropertySetter<?>> extractAvailableProperties(final ClassAccessWrapper<T> searchClass,
-            final ValueGeneratorFactory valueGeneratorFactory) {
+    public static <T> Collection<ClassPropertySetter<?>> extractAvailableProperties(final ClassAccessWrapper<T> searchClass, final ValueGeneratorFactory valueGeneratorFactory) {
         // Step 1. Create Collection field setters
         final Collection<ClassPropertySetter<?>> propertySetters = new TreeSet<ClassPropertySetter<?>>(COMPARE_STRING_PRESENTATION);
         propertySetters.addAll(valueGeneratorFactory.getPropertySetterManager().getApplicableProperties(searchClass));

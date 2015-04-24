@@ -6,7 +6,7 @@ import com.clemble.test.random.generator.RandomValueGeneratorFactory;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
+import java.util.function.Supplier;
 
 public class ObjectGenerator {
 
@@ -26,7 +26,7 @@ public class ObjectGenerator {
 
     public static <T> T generate(Class<T> classToGenerate, int attempts) {
         try {
-            return getValueGenerator(classToGenerate).call();
+            return getValueGenerator(classToGenerate).get();
         } catch (Throwable throwable) {
             if (attempts != 0) {
                 return generate(classToGenerate, attempts - 1);
@@ -48,15 +48,15 @@ public class ObjectGenerator {
         return results;
     }
 
-    public static <T> Callable<T> getValueGenerator(Class<T> classToGenerate) {
+    public static <T> Supplier<T> getValueGenerator(Class<T> classToGenerate) {
         return valueGeneratorFactory.get(classToGenerate);
     }
 
-    public static <T, V> void register(final Class<T> searchClass, final String name, final Callable<V> valueGenerator) {
+    public static <T, V> void register(final Class<T> searchClass, final String name, final Supplier<V> valueGenerator) {
         SETTER_MANAGER.register(searchClass, name, valueGenerator);
     }
 
-    public static <T> void register(final Class<T> klass, final Callable<T> valueGenerator) {
+    public static <T> void register(final Class<T> klass, final Supplier<T> valueGenerator) {
         valueGeneratorFactory.put(klass, valueGenerator);
     }
 

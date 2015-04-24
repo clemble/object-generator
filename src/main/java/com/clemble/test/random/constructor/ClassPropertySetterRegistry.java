@@ -13,6 +13,7 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.concurrent.Callable;
+import java.util.function.Supplier;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
@@ -85,7 +86,7 @@ final public class ClassPropertySetterRegistry {
      *            {@link Callable} to use.
      */
     @SuppressWarnings({ "rawtypes", "unchecked" })
-	public <T> void register(final Class<?> searchClass, final String name, final Callable<T> valueGenerator) {
+	public <T> void register(final Class<?> searchClass, final String name, final Supplier<T> valueGenerator) {
         if ((searchClass.getModifiers() & (Modifier.ABSTRACT | Modifier.INTERFACE)) > 0) {
             abstractPropertySelectors.add(new AbstractPropertySetter(searchClass, name, valueGenerator));
         } else {
@@ -93,7 +94,7 @@ final public class ClassPropertySetterRegistry {
         }
     }
     
-    private <T> ClassPropertySetter<T> constructSetter(final Class<?> searchClass, final String name, final Callable<T> valueGenerator) {
+    private <T> ClassPropertySetter<T> constructSetter(final Class<?> searchClass, final String name, final Supplier<T> valueGenerator) {
         final String possibleName = name.toLowerCase();
         final ClassAccessWrapper<?> wrapper = ClassAccessWrapper.createAllMethodsAccessor(searchClass);
         final Field possibleField = ClassPropertySetter.findField(wrapper, possibleName);
@@ -107,9 +108,10 @@ final public class ClassPropertySetterRegistry {
     public static class AbstractPropertySetter<T> {
         final private Class<?> searchClass;
         final private String name;
-        final private Callable<T> valueGenerator;
+        final private Supplier<T> valueGenerator;
 
-        public AbstractPropertySetter(Class<?> searchClass, String name, Callable<T> valueGenerator) {
+        public AbstractPropertySetter(Class<?> searchClass, String name, Supplier
+                <T> valueGenerator) {
             assert (searchClass.getModifiers() & (Modifier.ABSTRACT | Modifier.INTERFACE)) > 0;
             this.searchClass = checkNotNull(searchClass);
             this.name = checkNotNull(name);
@@ -124,7 +126,7 @@ final public class ClassPropertySetterRegistry {
             return name;
         }
 
-        public Callable<T> getValueGenerator() {
+        public Supplier<T> getValueGenerator() {
             return valueGenerator;
         }
     }

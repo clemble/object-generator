@@ -3,7 +3,7 @@ package com.clemble.test.random.constructor;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.Callable;
+import java.util.function.Supplier;
 
 import com.google.common.collect.ImmutableList;
 
@@ -45,15 +45,15 @@ final class ClassPropertyCombinedSetter<T> extends ClassPropertySetter<T> {
 	}
 
 	@Override
-	public List<Callable<?>> getValueGenerators() {
-		List<Callable<?>> valueGenerators = new ArrayList<Callable<?>>();
+	public List<Supplier<?>> getValueGenerators() {
+		List<Supplier<?>> valueGenerators = new ArrayList<Supplier<?>>();
 		for(ClassPropertySetter<?> propertySetter: propertySetters)
 			valueGenerators.addAll(propertySetter.getValueGenerators());
 		return valueGenerators;
 	}
 
 	@Override
-	public ClassPropertySetter<T> clone(List<Callable<?>> generatorsToUse) {
+	public ClassPropertySetter<T> clone(List<Supplier<?>> generatorsToUse) {
 		List<ClassPropertySetter<?>> newPropertySetters = new ArrayList<ClassPropertySetter<?>>();
 		for(ClassPropertySetter<?> propertySetter: propertySetters) {
 			newPropertySetters.add(propertySetter.clone(generatorsToUse));

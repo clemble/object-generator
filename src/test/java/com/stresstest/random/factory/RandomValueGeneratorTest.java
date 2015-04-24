@@ -29,25 +29,25 @@ public class RandomValueGeneratorTest {
     
     @Test
     public void testRandomStringValueGenerator() throws Exception {
-        String generatedValue = RandomValueGenerators.randomString(20).call();
+        String generatedValue = RandomValueGenerators.randomString(20).get();
         Assert.assertEquals(generatedValue.length(), 20);
     }
     
     @Test
     public void testRandomAlphabeticStringValueGenerator() throws Exception {
-        String generatedValue = RandomValueGenerators.randomAlphabeticString(30).call();
+        String generatedValue = RandomValueGenerators.randomAlphabeticString(30).get();
         Assert.assertEquals(generatedValue.length(), 30);
     }
     
     @Test
     public void testRandomAsciiStringValueGenerator() throws Exception {
-        String generatedValue = RandomValueGenerators.randomAsciiString(40).call();
+        String generatedValue = RandomValueGenerators.randomAsciiString(40).get();
         Assert.assertEquals(generatedValue.length(), 40);
     }
     
     @Test
     public void testRandomAlphanumericStringValueGenerator() throws Exception {
-        String generatedValue = RandomValueGenerators.randomAlphanumericString(50).call();
+        String generatedValue = RandomValueGenerators.randomAlphanumericString(50).get();
         Assert.assertEquals(generatedValue.length(), 50);
     }
 }

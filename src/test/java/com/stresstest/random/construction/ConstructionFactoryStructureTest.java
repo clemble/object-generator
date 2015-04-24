@@ -10,7 +10,7 @@ import com.clemble.test.random.constructor.ClassConstructorSimple;
 import com.clemble.test.random.constructor.ClassValueGenerator;
 import com.clemble.test.random.generator.RandomValueGeneratorFactory;
 
-import java.util.concurrent.Callable;
+import java.util.function.Supplier;
 
 @SuppressWarnings("unused")
 public class ConstructionFactoryStructureTest {
@@ -51,7 +51,7 @@ public class ConstructionFactoryStructureTest {
 
     @Test
     public void testPrivateFactoryConstructorUsed() {
-        Callable<PrivateFactoryMethodClass> factoryGenerator = valueGeneratorFactory.get(PrivateFactoryMethodClass.class);
+        Supplier<PrivateFactoryMethodClass> factoryGenerator = valueGeneratorFactory.get(PrivateFactoryMethodClass.class);
         ClassValueGenerator<PrivateFactoryMethodClass> classValueGenerator = (ClassValueGenerator<PrivateFactoryMethodClass>) factoryGenerator;
         Assert.assertTrue(classValueGenerator.getObjectConstructor() instanceof ClassConstructorFactory);
     }
@@ -90,7 +90,7 @@ public class ConstructionFactoryStructureTest {
 
     @Test
     public void testProtectedFactoryConstructorUsed() {
-        Callable<ProtectedFactoryMethodClass> factoryGenerator = valueGeneratorFactory.get(ProtectedFactoryMethodClass.class);
+        Supplier<ProtectedFactoryMethodClass> factoryGenerator = valueGeneratorFactory.get(ProtectedFactoryMethodClass.class);
         ClassValueGenerator<ProtectedFactoryMethodClass> classValueGenerator = (ClassValueGenerator<ProtectedFactoryMethodClass>) factoryGenerator;
         Assert.assertTrue(classValueGenerator.getObjectConstructor() instanceof ClassConstructorFactory);
     }
@@ -129,7 +129,7 @@ public class ConstructionFactoryStructureTest {
 
     @Test
     public void testDefaultFactoryConstructorUsed() {
-        Callable<DefaultFactoryMethodClass> factoryGenerator = valueGeneratorFactory.get(DefaultFactoryMethodClass.class);
+        Supplier<DefaultFactoryMethodClass> factoryGenerator = valueGeneratorFactory.get(DefaultFactoryMethodClass.class);
         ClassValueGenerator<DefaultFactoryMethodClass> classValueGenerator = (ClassValueGenerator<DefaultFactoryMethodClass>) factoryGenerator;
         Assert.assertTrue(classValueGenerator.getObjectConstructor() instanceof ClassConstructorFactory);
     }
@@ -168,7 +168,7 @@ public class ConstructionFactoryStructureTest {
 
     @Test
     public void testPublicFactoryConstructorUsed() {
-        Callable<PublicFactoryMethodClass> factoryGenerator = valueGeneratorFactory.get(PublicFactoryMethodClass.class);
+        Supplier<PublicFactoryMethodClass> factoryGenerator = valueGeneratorFactory.get(PublicFactoryMethodClass.class);
         ClassValueGenerator<PublicFactoryMethodClass> classValueGenerator = (ClassValueGenerator<PublicFactoryMethodClass>) factoryGenerator;
         Assert.assertTrue(classValueGenerator.getObjectConstructor() instanceof ClassConstructorFactory);
     }
@@ -194,10 +194,10 @@ public class ConstructionFactoryStructureTest {
 
     @Test
     public void testMostParametersUsed() throws Exception {
-        Callable<TwoParametersClass> factoryGenerator = valueGeneratorFactory.get(TwoParametersClass.class);
+        Supplier<TwoParametersClass> factoryGenerator = valueGeneratorFactory.get(TwoParametersClass.class);
         ClassValueGenerator<TwoParametersClass> classValueGenerator = (ClassValueGenerator<TwoParametersClass>) factoryGenerator;
         Assert.assertTrue(classValueGenerator.getObjectConstructor() instanceof ClassConstructorSimple);
-        Assert.assertNotNull(factoryGenerator.call());
+        Assert.assertNotNull(factoryGenerator.get());
         ClassConstructorSimple<?> constructor = (ClassConstructorSimple<?>) classValueGenerator.getObjectConstructor();
         Assert.assertEquals(constructor.getConstructor().getParameterTypes().length, 2);
     }

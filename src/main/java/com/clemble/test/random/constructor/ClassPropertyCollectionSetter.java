@@ -5,7 +5,7 @@ import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.Callable;
+import java.util.function.Supplier;
 
 import com.clemble.test.random.ObjectGenerator;
 
@@ -30,9 +30,9 @@ final class ClassPropertyCollectionSetter<T> extends ClassPropertySetter<T> {
     /**
      * ValueGenerator to use for additional value generation.
      */
-    final private Callable<T> valueGenerator;
+    final private Supplier<T> valueGenerator;
 
-    ClassPropertyCollectionSetter(final ClassPropertySimpleSetter<T> iInitialPropertySetter, final Method iMethod, final Callable<T> iValueGenerator) {
+    ClassPropertyCollectionSetter(final ClassPropertySimpleSetter<T> iInitialPropertySetter, final Method iMethod, final Supplier<T> iValueGenerator) {
         this.method = iMethod;
         this.valueGenerator = iValueGenerator;
         this.initialPropertySetter = iInitialPropertySetter;
@@ -51,10 +51,10 @@ final class ClassPropertyCollectionSetter<T> extends ClassPropertySetter<T> {
         Method addMethod = findAddMethod(sourceClass, ClassPropertySetter.extractFieldName(field));
         Method setMethod = findSetMethod(sourceClass, ClassPropertySetter.extractFieldName(field));
 
-        this.initialPropertySetter = new ClassPropertySimpleSetter<T>(field, setMethod, (Callable<T>) ObjectGenerator.getValueGenerator(field.getType()));
+        this.initialPropertySetter = new ClassPropertySimpleSetter<T>(field, setMethod, (Supplier<T>) ObjectGenerator.getValueGenerator(field.getType()));
 
         if (addMethod != null) {
-            this.valueGenerator = (Callable<T>) ObjectGenerator.getValueGenerator(addMethod.getParameterTypes()[0]);
+            this.valueGenerator = (Supplier<T>) ObjectGenerator.getValueGenerator(addMethod.getParameterTypes()[0]);
             this.method = addMethod;
         } else {
             this.valueGenerator = null;
@@ -66,11 +66,10 @@ final class ClassPropertyCollectionSetter<T> extends ClassPropertySetter<T> {
     ClassPropertyCollectionSetter(final ClassAccessWrapper<?> sourceClass, final Method setMethod) {
         Method addMethod = findAddMethod(sourceClass, setMethod.getName().substring(3));
 
-        this.initialPropertySetter = new ClassPropertySimpleSetter<T>(null, setMethod, (Callable<T>) ObjectGenerator.
-                getValueGenerator(setMethod.getParameterTypes()[0]));
+        this.initialPropertySetter = new ClassPropertySimpleSetter<T>(null, setMethod, (Supplier<T>) ObjectGenerator.getValueGenerator(setMethod.getParameterTypes()[0]));
 
         if (addMethod != null) {
-            this.valueGenerator = (Callable<T>) ObjectGenerator.getValueGenerator(addMethod.getParameterTypes()[0]);
+            this.valueGenerator = (Supplier<T>) ObjectGenerator.getValueGenerator(addMethod.getParameterTypes()[0]);
             this.method = addMethod;
         } else {
             this.valueGenerator = null;
@@ -87,7 +86,7 @@ final class ClassPropertyCollectionSetter<T> extends ClassPropertySetter<T> {
         Object valueToSet = null;
         try {
             if (method != null && valueGenerator != null) {
-                valueToSet = valueGenerator.call();
+                valueToSet = valueGenerator.get();
                 method.invoke(target, valueToSet);
             }
         } catch (Exception methodSetException) {
@@ -111,13 +110,13 @@ final class ClassPropertyCollectionSetter<T> extends ClassPropertySetter<T> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<Callable<?>> getValueGenerators() {
-        return (List<Callable<?>>) (Collection<?>) Collections.singletonList(valueGenerator);
+    public List<Supplier<?>> getValueGenerators() {
+        return (List<Supplier<?>>) (Collection<?>) Collections.singletonList(valueGenerator);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public ClassPropertySetter<T> clone(List<Callable<?>> generatorsToUse) {
-        return new ClassPropertyCollectionSetter<T>(initialPropertySetter, method, (Callable<T>) generatorsToUse.remove(0));
+    public ClassPropertySetter<T> clone(List<Supplier<?>> generatorsToUse) {
+        return new ClassPropertyCollectionSetter<T>(initialPropertySetter, method, (Supplier<T>) generatorsToUse.remove(0));
     }
 }

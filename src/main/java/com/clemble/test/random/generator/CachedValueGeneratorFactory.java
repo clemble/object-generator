@@ -6,10 +6,10 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 
-import java.util.concurrent.Callable;
+import java.util.function.Supplier;
 
 /**
- * {@link ValueGeneratorFactory} implementation that uses caching to optimize {@link Callable} production.
+ * {@link ValueGeneratorFactory} implementation that uses caching to optimize {@link Supplier} production.
  * 
  * @author Anton Oparin
  * 
@@ -21,10 +21,10 @@ public class CachedValueGeneratorFactory extends AbstractValueGeneratorFactory {
     /**
      * Google LoadingCache that is used as a primary cache implementation.
      */
-    final private LoadingCache<Class<?>, Callable<?>> cachedValueGenerators = CacheBuilder.newBuilder().build(
-            new CacheLoader<Class<?>, Callable<?>>() {
+    final private LoadingCache<Class<?>, Supplier<?>> cachedValueGenerators = CacheBuilder.newBuilder().build(
+            new CacheLoader<Class<?>, Supplier<?>>() {
                 @Override
-                public Callable<?> load(Class<?> klass) throws Exception {
+                public Supplier<?> load(Class<?> klass) throws Exception {
                     return valueGeneratorFactory.get(klass);
                 }
             });
@@ -36,21 +36,21 @@ public class CachedValueGeneratorFactory extends AbstractValueGeneratorFactory {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T> Callable<T> get(Class<T> klass) {
+    public <T> Supplier<T> get(Class<T> klass) {
         try {
-            return (Callable<T>) cachedValueGenerators.get(klass);
+            return (Supplier<T>) cachedValueGenerators.get(klass);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
     @Override
-    protected <T> Callable<T> enumValueGenerator(Class<T> klass) {
+    protected <T> Supplier<T> enumValueGenerator(Class<T> klass) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    protected <T> Callable<T> arrayValueGenerator(Class<?> klass) {
+    protected <T> Supplier<T> arrayValueGenerator(Class<?> klass) {
         throw new UnsupportedOperationException();
     }
 

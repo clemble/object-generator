@@ -3,7 +3,7 @@ package com.clemble.test.random.generator;
 import com.clemble.test.random.AbstractValueGeneratorFactory;
 import com.clemble.test.random.constructor.ClassPropertySetterRegistry;
 
-import java.util.concurrent.Callable;
+import java.util.function.Supplier;
 
 public class RandomValueGeneratorFactory extends AbstractValueGeneratorFactory {
 
@@ -16,19 +16,19 @@ public class RandomValueGeneratorFactory extends AbstractValueGeneratorFactory {
     }
 
     @Override
-    public <T> Callable<T> enumValueGenerator(Class<T> enumClass) {
+    public <T> Supplier<T> enumValueGenerator(Class<T> enumClass) {
         return RandomValueGenerators.enumValueGenerator(enumClass);
     }
 
     @Override
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    protected Callable arrayValueGenerator(Class klass) {
-        final Callable valueGenerator = get(klass.getComponentType());
+    protected Supplier arrayValueGenerator(Class klass) {
+        final Supplier valueGenerator = get(klass.getComponentType());
         return () -> {
             int size = 1 + RandomValueGenerators.RANDOM_UTILS.nextInt(10);
             Object[] values = new Object[size];
             for (int i = 0; i < size; i++)
-                values[i] = valueGenerator.call();
+                values[i] = valueGenerator.get();
             return values;
         };
     }

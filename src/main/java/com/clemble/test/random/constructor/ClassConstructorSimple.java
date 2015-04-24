@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.Callable;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import com.clemble.test.random.ValueGeneratorFactory;
@@ -29,7 +29,7 @@ public final class ClassConstructorSimple<T> extends ClassConstructor<T> {
 	/**
 	 * Set of values to generate parameters for the constructor.
 	 */
-	final private List<Callable<?>> constructorValueGenerators;
+	final private List<Supplier<?>> constructorValueGenerators;
 
 	/**
 	 * Constructor based generation.
@@ -37,11 +37,11 @@ public final class ClassConstructorSimple<T> extends ClassConstructor<T> {
 	 * @param constructor
 	 *            constructor to use.
 	 * @param constructorValueGenerators
-	 *            {@link Callable} to use.
+	 *            {@link Supplier} to use.
 	 */
-	public ClassConstructorSimple(final Constructor<T> constructor, final Collection<Callable<?>> constructorValueGenerators) {
+	public ClassConstructorSimple(final Constructor<T> constructor, final Collection<Supplier<?>> constructorValueGenerators) {
 		this.constructor = checkNotNull(constructor);
-		this.constructorValueGenerators = ImmutableList.<Callable<?>>copyOf(checkNotNull(constructorValueGenerators));
+		this.constructorValueGenerators = ImmutableList.<Supplier<?>>copyOf(checkNotNull(constructorValueGenerators));
 	}
 
 	/**
@@ -54,11 +54,11 @@ public final class ClassConstructorSimple<T> extends ClassConstructor<T> {
 	}
 
 	/**
-	 * Returns a {@link Collection} of {@link Callable} to use, while construction.
+	 * Returns a {@link Collection} of {@link Supplier} to use, while construction.
 	 * 
-	 * @return {@link Collection} of {@link Callable} to use, while construction.
+	 * @return {@link Collection} of {@link Supplier} to use, while construction.
 	 */
-	public Collection<Callable<?>> getConstructorValueGenerators() {
+	public Collection<Supplier<?>> getConstructorValueGenerators() {
 		return constructorValueGenerators;
 	}
 
@@ -69,8 +69,8 @@ public final class ClassConstructorSimple<T> extends ClassConstructor<T> {
 		try {
             // Step 1. Generate value for Constructor
             Collection values = new ArrayList();
-            for (Callable<?> valueGenerator : getConstructorValueGenerators())
-                values.add(valueGenerator.call());
+            for (Supplier<?> valueGenerator : getConstructorValueGenerators())
+                values.add(valueGenerator.get());
             // Step 1.1 Make constructor accessible if needed
             if (!constructor.isAccessible())
 			    constructor.setAccessible(true);
@@ -83,12 +83,12 @@ public final class ClassConstructorSimple<T> extends ClassConstructor<T> {
 	}
 
 	@Override
-	public List<Callable<?>> getValueGenerators() {
+	public List<Supplier<?>> getValueGenerators() {
 		return constructorValueGenerators;
 	}
 	
 	@Override
-	public ClassConstructor<T> clone(List<Callable<?>> generatorsToUse) {
+	public ClassConstructor<T> clone(List<Supplier<?>> generatorsToUse) {
 		return new ClassConstructorSimple<T>(constructor, generatorsToUse);
 	}
 

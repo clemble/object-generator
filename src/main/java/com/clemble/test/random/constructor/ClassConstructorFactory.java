@@ -7,7 +7,7 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.Callable;
+import java.util.function.Supplier;
 
 import com.clemble.test.random.ValueGeneratorFactory;
 import com.google.common.base.Predicate;
@@ -28,9 +28,9 @@ final public class ClassConstructorFactory<T> extends ClassConstructor<T> {
      */
     final private Method builder;
     /**
-     * {@link Collection} of {@link Callable} to use in factory method.
+     * {@link Collection} of {@link Supplier} to use in factory method.
      */
-    final private List<Callable<?>> constructorValueGenerators;
+    final private List<Supplier<?>> constructorValueGenerators;
 
     /**
      * Default constructor.
@@ -40,9 +40,9 @@ final public class ClassConstructorFactory<T> extends ClassConstructor<T> {
      * @param constructorValueGenerators
      *            {@link Collection} of {@link java.util.concurrent.Callable} to use.
      */
-    public ClassConstructorFactory(Method builder, Collection<Callable<?>> constructorValueGenerators) {
+    public ClassConstructorFactory(Method builder, Collection<Supplier<?>> constructorValueGenerators) {
         this.builder = checkNotNull(builder);
-        this.constructorValueGenerators = ImmutableList.<Callable<?>>copyOf(checkNotNull(constructorValueGenerators));
+        this.constructorValueGenerators = ImmutableList.<Supplier<?>>copyOf(checkNotNull(constructorValueGenerators));
     }
 
     @Override
@@ -52,8 +52,8 @@ final public class ClassConstructorFactory<T> extends ClassConstructor<T> {
         try {
             // Step 1. Generate value for Constructor
             Collection values = new ArrayList();
-            for (Callable<?> valueGenerator : constructorValueGenerators)
-                values.add(valueGenerator.call());
+            for (Supplier<?> valueGenerator : constructorValueGenerators)
+                values.add(valueGenerator.get());
             // Step 2. Invoke constructor, creating empty Object
             builder.setAccessible(true);
             generatedObject = values.size() == 0 ? builder.invoke(null, ImmutableList.of().toArray()) : builder.invoke(null, values.toArray());
@@ -64,12 +64,12 @@ final public class ClassConstructorFactory<T> extends ClassConstructor<T> {
     }
 
 	@Override
-	public List<Callable<?>> getValueGenerators() {
+	public List<Supplier<?>> getValueGenerators() {
 		return constructorValueGenerators;
 	}
 
 	@Override
-	public ClassConstructor<T> clone(List<Callable<?>> generatorsToUse) {
+	public ClassConstructor<T> clone(List<Supplier<?>> generatorsToUse) {
 		return new ClassConstructorFactory<T>(builder, generatorsToUse);
 	}
 

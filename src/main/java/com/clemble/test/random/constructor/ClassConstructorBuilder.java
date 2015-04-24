@@ -6,7 +6,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.Callable;
+import java.util.function.Supplier;
 
 import com.clemble.test.random.ValueGeneratorFactory;
 import com.google.common.base.Predicate;
@@ -37,7 +37,7 @@ public class ClassConstructorBuilder<T> extends ClassConstructor<T> {
      * Default constructor.
      *
      * @param builderFactoryMethod factory method to construct builder.
-     * @param classPropertySetter  {@link Collection} of {@link Callable} to use as property setters.
+     * @param classPropertySetter  {@link Collection} of {@link Supplier} to use as property setters.
      * @param valueBuilderMethod   method to generate value.
      */
     private ClassConstructorBuilder(final ClassConstructorFactory<?> builderFactoryMethod,
@@ -62,11 +62,11 @@ public class ClassConstructorBuilder<T> extends ClassConstructor<T> {
     }
 
     @Override
-    public List<Callable<?>> getValueGenerators() {
+    public List<Supplier<?>> getValueGenerators() {
         return classPropertySetter.getValueGenerators();
     }
 
-    public ClassConstructor<T> clone(List<Callable<?>> generatorsToUse) {
+    public ClassConstructor<T> clone(List<Supplier<?>> generatorsToUse) {
         return new ClassConstructorBuilder<T>(builderFactoryMethod, classPropertySetter.clone(generatorsToUse), valueBuilderMethod);
     }
 

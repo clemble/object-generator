@@ -11,6 +11,7 @@ import com.clemble.test.random.constructor.ClassValueGenerator;
 import com.clemble.test.random.generator.RandomValueGeneratorFactory;
 
 import java.util.concurrent.Callable;
+import java.util.function.Supplier;
 
 public class DefaultBasedGenerationTest {
 
@@ -42,7 +43,7 @@ public class DefaultBasedGenerationTest {
 
     @Test
     public void testDefaultFactoryConstructorUsed() {
-        Callable<DefaultBuilderBasedClass> factoryGenerator = valueGeneratorFactory.get(DefaultBuilderBasedClass.class);
+        Supplier<DefaultBuilderBasedClass> factoryGenerator = valueGeneratorFactory.get(DefaultBuilderBasedClass.class);
         ClassValueGenerator<DefaultBuilderBasedClass> classValueGenerator = (ClassValueGenerator<DefaultBuilderBasedClass>) factoryGenerator;
         Assert.assertTrue(classValueGenerator.getObjectConstructor() instanceof ClassConstructorBuilder);
     }

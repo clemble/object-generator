@@ -3,6 +3,7 @@ package com.clemble.test.random.constructor;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.util.concurrent.Callable;
+import java.util.function.Supplier;
 
 /**
  * Generates random value of specified Class.
@@ -11,7 +12,7 @@ import java.util.concurrent.Callable;
  *
  * @param <T> parameterized {@link Class}.
  */
-public class ClassValueGenerator<T> implements Callable<T> {
+public class ClassValueGenerator<T> implements Supplier<T> {
 
     /**
      * {@link ClassConstructor} used for value construction.
@@ -35,7 +36,7 @@ public class ClassValueGenerator<T> implements Callable<T> {
 
     @Override
     @SuppressWarnings({ "unchecked" })
-    public T call() {
+    public T get() {
         // Step 1. Generating random Object
         Object generatedObject = objectConstructor.construct();
         // Step 2. Setting properties to the Object

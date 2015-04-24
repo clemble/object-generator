@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
-import java.util.concurrent.Callable;
+import java.util.function.Supplier;
 
 import com.clemble.test.random.constructor.ClassAccessWrapper;
 import com.clemble.test.random.constructor.ClassConstructor;
@@ -26,41 +26,41 @@ abstract public class AbstractValueGeneratorFactory implements ValueGeneratorFac
      * {@link Collection} random value generator, as a result empty {@link ArrayList} returned.
      */
     @SuppressWarnings("rawtypes")
-    final public static Callable<Collection<?>> COLLECTION_VALUE_GENERATOR = () -> new ArrayList();
+    final public static Supplier<Collection<?>> COLLECTION_VALUE_GENERATOR = () -> new ArrayList();
 
     /**
      * {@link List} random value generator, as a result generates empty {@link ArrayList} returned.
      */
     @SuppressWarnings("rawtypes")
-    final public static Callable<List<?>> LIST_VALUE_GENERATOR = () ->  new ArrayList();
+    final public static Supplier<List<?>> LIST_VALUE_GENERATOR = () ->  new ArrayList();
 
     /**
      * {@link Queue} random value generator as a result empty {@link ArrayDeque} returned.
      */
     @SuppressWarnings("rawtypes")
-    final public static Callable<Queue<?>> QUEUE_VALUE_GENERATOR = () -> new ArrayDeque();
+    final public static Supplier<Queue<?>> QUEUE_VALUE_GENERATOR = () -> new ArrayDeque();
 
     /**
      * {@link Deque} random value generator, as a result emptu {@link ArrayDeque} returned.
      */
     @SuppressWarnings("rawtypes")
-    final public static Callable<Deque<?>> DEQUE_VALUE_GENERATOR = () -> new ArrayDeque();
+    final public static Supplier<Deque<?>> DEQUE_VALUE_GENERATOR = () -> new ArrayDeque();
 
     /**
      * {@link Set} random value generator, as a result empty {@link HashSet} returned.
      */
     @SuppressWarnings("rawtypes")
-    final public static Callable<Set<?>> SET_VALUE_GENERATOR = () -> new HashSet();
+    final public static Supplier<Set<?>> SET_VALUE_GENERATOR = () -> new HashSet();
 
     /**
      * {@link Map} random value generator, as a result empty {@link HashMap} returned.
      */
     @SuppressWarnings("rawtypes")
-    final public static Callable<Map<?, ?>> MAP_VALUE_GENERATOR = () -> new HashMap();
+    final public static Supplier<Map<?, ?>> MAP_VALUE_GENERATOR = () -> new HashMap();
 
-    final private Map<Class<?>, Callable<?>> DEFAULT_GENERATORS;
+    final private Map<Class<?>, Supplier<?>> DEFAULT_GENERATORS;
 
-    final private Map<Class<?>, Callable<?>> REGISTERED_GENERATORS = new HashMap<Class<?>, Callable<?>>();
+    final private Map<Class<?>, Supplier<?>> REGISTERED_GENERATORS = new HashMap<Class<?>, Supplier<?>>();
 
     final private ClassPropertySetterRegistry propertySetterManager;
 
@@ -68,10 +68,10 @@ abstract public class AbstractValueGeneratorFactory implements ValueGeneratorFac
         this(setterManager, null);
     }
 
-    public AbstractValueGeneratorFactory(final ClassPropertySetterRegistry setterManager, Map<Class<?>, Callable<?>> defaultGenerators) {
+    public AbstractValueGeneratorFactory(final ClassPropertySetterRegistry setterManager, Map<Class<?>, Supplier<?>> defaultGenerators) {
         this.propertySetterManager = setterManager != null ? setterManager : new ClassPropertySetterRegistry();
 
-        HashMap<Class<?>, Callable<?>> standardValueGenerators = new HashMap<Class<?>, Callable<?>>();
+        HashMap<Class<?>, Supplier<?>> standardValueGenerators = new HashMap<Class<?>, Supplier<?>>();
 
         standardValueGenerators.put(Collection.class, COLLECTION_VALUE_GENERATOR);
         standardValueGenerators.put(List.class, LIST_VALUE_GENERATOR);
@@ -87,18 +87,18 @@ abstract public class AbstractValueGeneratorFactory implements ValueGeneratorFac
         DEFAULT_GENERATORS = ImmutableMap.copyOf(standardValueGenerators);
     }
 
-    final public <T> void put(Class<T> klass, Callable<T> valueGenerator) {
+    final public <T> void put(Class<T> klass, Supplier<T> valueGenerator) {
         if (klass != null && valueGenerator != null)
             REGISTERED_GENERATORS.put(klass, valueGenerator);
     }
 
     @Override
-    final public Collection<Callable<?>> get(Class<?>[] parameters) {
+    final public Collection<Supplier<?>> get(Class<?>[] parameters) {
         // Step 1. Sanity check
         if (parameters == null || parameters.length == 0)
             return Collections.emptyList();
         // Step 2. Sequential check
-        Collection<Callable<?>> resultGenerators = new ArrayList<Callable<?>>();
+        Collection<Supplier<?>> resultGenerators = new ArrayList<Supplier<?>>();
         for (Class<?> parameter : parameters) {
             if (parameter != null)
                 resultGenerators.add(get(parameter));
@@ -112,20 +112,20 @@ abstract public class AbstractValueGeneratorFactory implements ValueGeneratorFac
     }
 
     /**
-     * Produces {@link Callable} for specified {@link Class}.
+     * Produces {@link Supplier} for specified {@link Class}.
      * 
      * @param klass
      *            generated {@link Class}
-     * @return {@link Callable} for procided {@link Class}
+     * @return {@link Supplier} for procided {@link Class}
      */
     @SuppressWarnings("unchecked")
-    public <T> Callable<T> get(Class<T> klass) {
+    public <T> Supplier<T> get(Class<T> klass) {
         // Step 1. Checking that it can be replaced with standard constructors
-        Callable<T> valueGenerator = (Callable<T>) DEFAULT_GENERATORS.get(klass);
+        Supplier<T> valueGenerator = (Supplier<T>) DEFAULT_GENERATORS.get(klass);
         if (valueGenerator != null)
             return valueGenerator;
         // Step 1.1. Checking registered generators
-        valueGenerator = (Callable<T>) REGISTERED_GENERATORS.get(klass);
+        valueGenerator = (Supplier<T>) REGISTERED_GENERATORS.get(klass);
         if(valueGenerator != null)
             return valueGenerator;
         // Step 2. If this is enum replace with Random value generator
@@ -145,7 +145,7 @@ abstract public class AbstractValueGeneratorFactory implements ValueGeneratorFac
         }
         for(Class<?> registered: REGISTERED_GENERATORS.keySet()) {
             if(klass.isAssignableFrom(registered)) {
-                return (Callable<T>) REGISTERED_GENERATORS.get(registered);
+                return (Supplier<T>) REGISTERED_GENERATORS.get(registered);
             }
         }
         // Step 7. If there is no result throw IllegalArgumentException
@@ -153,16 +153,16 @@ abstract public class AbstractValueGeneratorFactory implements ValueGeneratorFac
     }
 
     /**
-     * Produces {@link Callable} for provided {@link ClassAccessWrapper}, returned {@link Callable} can return any subtype of the target
+     * Produces {@link Supplier} for provided {@link ClassAccessWrapper}, returned {@link Supplier} can return any subtype of the target
      * {@link Class}.
      * 
      * @param sourceClass
      *            {@link ClassAccessWrapper} with defined level of access.
-     * @return {@link Callable} for provided class if, there is possible to create one.
+     * @return {@link Supplier} for provided class if, there is possible to create one.
      */
     @SuppressWarnings("unchecked")
-    private <T> Callable<T> construct(final ClassAccessWrapper<T> sourceClass) {
-        Callable<T> valueGenerator = sourceClass.constructable() ? tryConstruct(sourceClass) : null;
+    private <T> Supplier<T> construct(final ClassAccessWrapper<T> sourceClass) {
+        Supplier<T> valueGenerator = sourceClass.constructable() ? tryConstruct(sourceClass) : null;
         if (valueGenerator != null)
             return valueGenerator;
         // Step 3.1 Trying to initialize sub classes
@@ -171,9 +171,9 @@ abstract public class AbstractValueGeneratorFactory implements ValueGeneratorFac
         for (Class<?> subClass : subClasses) {
             ClassAccessWrapper<?> childWrapper = sourceClass.wrap(subClass);
             if(REGISTERED_GENERATORS.containsKey(childWrapper.getSourceClass()))
-                return (Callable<T>) REGISTERED_GENERATORS.get(childWrapper.getSourceClass());
+                return (Supplier<T>) REGISTERED_GENERATORS.get(childWrapper.getSourceClass());
             if (childWrapper.constructable()) {
-                valueGenerator = (Callable<T>) tryConstruct(childWrapper);
+                valueGenerator = (Supplier<T>) tryConstruct(childWrapper);
                 if (valueGenerator != null)
                     return valueGenerator;
             }
@@ -182,13 +182,13 @@ abstract public class AbstractValueGeneratorFactory implements ValueGeneratorFac
     }
 
     /**
-     * Produces {@link Callable} for a {@link Class} with restricted access.
+     * Produces {@link Supplier} for a {@link Class} with restricted access.
      * 
      * @param classToGenerate
      *            {@link ClassAccessWrapper} for the class.
-     * @return {@link Callable} if it is possible to create one, with defined access level, <code>null</code> otherwise.
+     * @return {@link Supplier} if it is possible to create one, with defined access level, <code>null</code> otherwise.
      */
-    private <T> Callable<T> tryConstruct(final ClassAccessWrapper<T> classToGenerate) {
+    private <T> Supplier<T> tryConstruct(final ClassAccessWrapper<T> classToGenerate) {
         // Step 1. Selecting appropriate constructor
         ClassConstructor<T> objectConstructor = ClassConstructor.construct(classToGenerate, this);
         if (objectConstructor == null)
@@ -199,8 +199,8 @@ abstract public class AbstractValueGeneratorFactory implements ValueGeneratorFac
         return new ClassValueGenerator<T>(objectConstructor, classPropertySetter);
     }
 
-    protected abstract <T> Callable<T> enumValueGenerator(Class<T> klass);
+    protected abstract <T> Supplier<T> enumValueGenerator(Class<T> klass);
 
-    protected abstract <T> Callable<T> arrayValueGenerator(Class<?> klass);
+    protected abstract <T> Supplier<T> arrayValueGenerator(Class<?> klass);
 
 }

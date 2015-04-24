@@ -5,6 +5,7 @@ import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.function.Supplier;
 
 /**
  * Property setter implementation for a plain field.
@@ -27,7 +28,7 @@ final class ClassPropertySimpleSetter<T> extends ClassPropertySetter<T> {
 	/**
 	 * Value Generator to use to set the value property
 	 */
-	final private Callable<?> valueGenerator;
+	final private Supplier<?> valueGenerator;
 
 	/**
 	 * Default constructor.
@@ -39,7 +40,7 @@ final class ClassPropertySimpleSetter<T> extends ClassPropertySetter<T> {
 	 * @param valueGenerator
 	 *            ValueGenerator to use.
 	 */
-	ClassPropertySimpleSetter(final Field field, final Method method, final Callable<T> valueGenerator) {
+	ClassPropertySimpleSetter(final Field field, final Method method, final Supplier<T> valueGenerator) {
 		this.field = field;
 		this.method = method;
 		this.valueGenerator = valueGenerator;
@@ -49,7 +50,7 @@ final class ClassPropertySimpleSetter<T> extends ClassPropertySetter<T> {
 	public void setProperties(final Object target) {
         Object valueToSet = null;
         try {
-            valueToSet = valueGenerator.call();
+            valueToSet = valueGenerator.get();
             // Step 1. Setting value, preferring method over field
 			if (method != null) {
 				method.invoke(target, valueToSet);
@@ -84,14 +85,14 @@ final class ClassPropertySimpleSetter<T> extends ClassPropertySetter<T> {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<Callable<?>> getValueGenerators() {
-		return (List<Callable<?>>)(List<?>) Collections.singletonList(valueGenerator);
+	public List<Supplier<?>> getValueGenerators() {
+		return (List<Supplier<?>>)(List<?>) Collections.singletonList(valueGenerator);
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public ClassPropertySetter<T> clone(List<Callable<?>> generatorsToUse) {
-		return new ClassPropertySimpleSetter<T>(field, method, (Callable<T>) generatorsToUse.remove(0));
+	public ClassPropertySetter<T> clone(List<Supplier<?>> generatorsToUse) {
+		return new ClassPropertySimpleSetter<T>(field, method, (Supplier<T>) generatorsToUse.remove(0));
 	}
 
 }

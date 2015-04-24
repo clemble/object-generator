@@ -19,7 +19,7 @@ import com.stresstest.random.construction.external.UncreatableObject;
 import com.stresstest.random.construction.external.impl.PublicAbstractClassImpl;
 import com.stresstest.random.construction.external.impl.PublicInterfaceImpl;
 
-import java.util.concurrent.Callable;
+import java.util.function.Supplier;
 
 public class ExternalPublicBasedGenerationTest {
 
@@ -55,10 +55,10 @@ public class ExternalPublicBasedGenerationTest {
 
     @Test
     public void testPrivateBuilderBasedClassCreation() throws Exception {
-        Callable<PrivateBuilderBasedClass> valueGenerator = ObjectGenerator.getValueGenerator(PrivateBuilderBasedClass.class);
+        Supplier<PrivateBuilderBasedClass> valueGenerator = ObjectGenerator.getValueGenerator(PrivateBuilderBasedClass.class);
         ClassValueGenerator<PrivateBuilderBasedClass> classValueGenerator = (ClassValueGenerator<PrivateBuilderBasedClass>) valueGenerator;
         Assert.assertTrue(classValueGenerator.getObjectConstructor() instanceof ClassConstructorBuilder);
-        Assert.assertNotNull(valueGenerator.call());
+        Assert.assertNotNull(valueGenerator.get());
     }
 
     
